@@ -24,12 +24,18 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFram
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTubePlayerUtils;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
-public class MainActivity extends AppCompatActivity {
+import java.util.Random;
 
-    TextView textView;
+public class MainActivity extends AppCompatActivity {
+    private static final String[] VideoIds3 = {"Sy5WFjCQFwo"};
+    public static String getNextVideoId() {
+        return VideoIds3[0];
+    }
+
+    TextView VideoIds;
 
     private YouTubePlayerView youTubePlayerView;
-    private static final String[] myRef1 = {""};
+//    private static final String[] myRef1 = {""};
 
     
     @SuppressLint("MissingInflatedId")
@@ -42,7 +48,7 @@ public class MainActivity extends AppCompatActivity {
 
         initYouTubePlayerView();
 //
-        textView = findViewById(R.id.myRef1);
+        VideoIds = findViewById(R.id.myRef1);
 
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         DatabaseReference myRef = database.getReference();
@@ -59,9 +65,7 @@ public class MainActivity extends AppCompatActivity {
             public void onDataChange(@NonNull DataSnapshot datasnapshot) {
                 String m = datasnapshot.getValue(String.class);
 
-                textView.setText(m);
-
-
+                VideoIds.setText(m);
 
 //                Log.d(TAG, "Value is: " + value);
             }
@@ -74,8 +78,29 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+
+
+
+//    private VideoIdsProvider2  {
+//        private static final String[] VideoIds2 = {"iz8DQnO1ab4"};
+
+//        private static final String[] liveVideoIds = {""};
+//        private static final Random random = new Random();
+
+//        public static String getNextVideoId() {
+//            return VideoIds[0];
+//        }
+//
+//        public static String getNextLiveVideoId() {
+//            return liveVideoIds[random.nextInt(liveVideoIds.length)];
+//        }
+//    }
+
+
     private void initYouTubePlayerView() {
         getLifecycle().addObserver(youTubePlayerView);
+
 
         YouTubePlayerListener listener = new AbstractYouTubePlayerListener() {
             @Override
@@ -90,7 +115,7 @@ public class MainActivity extends AppCompatActivity {
                 YouTubePlayerUtils.loadOrCueVideo(
                         youTubePlayer,
                         getLifecycle(),
-                        VideoIdsProvider.getNextVideoId(),
+                        getNextVideoId(),
                         0f
                 );
             }
@@ -123,7 +148,8 @@ public class MainActivity extends AppCompatActivity {
                 YouTubePlayerUtils.loadOrCueVideo(
                         youTubePlayer,
                         getLifecycle(),
-                        VideoIdsProvider.getNextVideoId(),
+                        "HXrETVPKWh0",
+
                         0f
                 )
         );

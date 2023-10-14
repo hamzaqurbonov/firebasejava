@@ -13,13 +13,15 @@
         android:text=""
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.472"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.918" />
 
     <com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView
         android:id="@+id/youtube_player_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="630dp"
 
         android:layout_marginBottom="50dp"
         app:enableAutomaticInitialization="false"
