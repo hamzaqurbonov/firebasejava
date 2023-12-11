@@ -26,20 +26,66 @@ import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTube
 
 import java.util.Random;
 
-//public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity {
+
+    private YouTubePlayerView youTubePlayerView;
+
+    @SuppressLint("MissingInflatedId")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        youTubePlayerView = findViewById(R.id.youtube_player_view);
+
+        initYouTubePlayerView();
+    }
 
 
 
-//    @SuppressLint("MissingInflatedId")
-//    @Override
-//    protected void onCreate(Bundle savedInstanceState) {
-//        super.onCreate(savedInstanceState);
-//        setContentView(R.layout.activity_main);
-//
-//
-//
-//
-//
-//    }
-
-//}
+    private void initYouTubePlayerView() {
+        getLifecycle().addObserver(youTubePlayerView);
+        YouTubePlayerListener listener = new AbstractYouTubePlayerListener() {
+            @Override
+            public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+                // using pre-made custom ui
+//                    DefaultPlayerUiController defaultPlayerUiController = new DefaultPlayerUiController(youTubePlayerView, youTubePlayer);
+//                    youTubePlayerView.setCustomPlayerUi(defaultPlayerUiController.getRootView());
+                setPlayNextVideoButtonClickListener(youTubePlayer);
+                YouTubePlayerUtils.loadOrCueVideo(
+                        youTubePlayer,
+                        getLifecycle(),
+                        "sbmzQPOTg-Y",
+                        0f
+                );
+            }
+        };
+        // disable web ui
+        IFramePlayerOptions options = new IFramePlayerOptions.Builder().controls(0).build();
+        youTubePlayerView.initialize(listener, options);
+    }
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            youTubePlayerView.matchParent();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            youTubePlayerView.wrapContent();
+        }
+    }
+    /**
+     * Set a click listener on the "Play next video" button
+     */
+    private void setPlayNextVideoButtonClickListener(final YouTubePlayer youTubePlayer) {
+        Button playNextVideoButton = findViewById(R.id.previous_video_button);
+        playNextVideoButton.setOnClickListener(view ->
+                YouTubePlayerUtils.loadOrCueVideo(
+                        youTubePlayer,
+                        getLifecycle(),
+                        "5E30dQyhrrk",
+                        0f
+                )
+        );
+    }
+}
