@@ -45,4 +45,5 @@ dependencies {
     implementation("com.google.firebase:firebase-analytics")
     implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
     implementation("de.hdodenhof:circleimageview:3.1.0")
+
 }

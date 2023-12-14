@@ -6,4 +6,5 @@
     </style>
 
     <style name="Theme.FirebaseJava" parent="Base.Theme.FirebaseJava" />
+    <style name="Theme.BirthdayGreet" parent="Theme.MaterialComponents.DayNight.DarkActionBar"/>
 </resources>
