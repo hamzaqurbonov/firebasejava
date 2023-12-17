@@ -10,6 +10,7 @@ import android.annotation.SuppressLint;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
@@ -81,7 +82,26 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         youTubePlayerView = findViewById(R.id.youtube_player_view);
-       initYouTubePlayerView();
+
+//        getLifecycle().addObserver(youTubePlayerView);
+//        View customPlayerUi = youTubePlayerView.inflateCustomPlayerUi(R.layout.custom_player_ui);
+        initYouTubePlayerView();
+
+//        YouTubePlayerListener listener = new AbstractYouTubePlayerListener() {
+//            @Override
+//            public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+//                CustomPlayerUiController customPlayerUiController = new CustomPlayerUiController(MainActivity.this, customPlayerUi, youTubePlayer, youTubePlayerView);
+//                youTubePlayer.addListener(customPlayerUiController);
+//
+//                YouTubePlayerUtils.loadOrCueVideo(
+//                        youTubePlayer, getLifecycle(),
+//                        "pL3vbhg8Qdo", 0f
+//                );
+//            }
+//        };
+//        IFramePlayerOptions options = new IFramePlayerOptions.Builder().controls(0).build();
+//
+//        youTubePlayerView.initialize(listener, options);
 
 
 
@@ -128,66 +148,62 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void initYouTubePlayerView() {
-        
+
         getLifecycle().addObserver(youTubePlayerView);
+        View customPlayerUi = youTubePlayerView.inflateCustomPlayerUi(R.layout.custom_player_ui);
         YouTubePlayerListener listener = new AbstractYouTubePlayerListener() {
             @Override
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                // using pre-made custom ui
-//                    DefaultPlayerUiController defaultPlayerUiController = new DefaultPlayerUiController(youTubePlayerView, youTubePlayer);
-//                    youTubePlayerView.setCustomPlayerUi(defaultPlayerUiController.getRootView());
-                setPlayNextVideoButtonClickListener(youTubePlayer);
+                CustomPlayerUiController customPlayerUiController = new CustomPlayerUiController(MainActivity.this, customPlayerUi, youTubePlayer, youTubePlayerView);
+                youTubePlayer.addListener(customPlayerUiController);
+
                 YouTubePlayerUtils.loadOrCueVideo(
-                        youTubePlayer,
-                        getLifecycle(),
-                        getNextVideoId(),
-                        0f
-
+                        youTubePlayer, getLifecycle(),
+                        getNextVideoId(), 0f
                 );
-
             }
         };
         // disable web ui
         IFramePlayerOptions options = new IFramePlayerOptions.Builder().controls(0).build();
         youTubePlayerView.initialize(listener, options);
     }
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            youTubePlayerView.matchParent();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            youTubePlayerView.wrapContent();
-        }
-    }
-
-    private void setPlayNextVideoButtonClickListener(final YouTubePlayer youTubePlayer) {
-        Button playPreviousVideoButton = findViewById(R.id.previous_video_button);
-        Button playNextVideoButton = findViewById(R.id.next_video_button);
-
-        playPreviousVideoButton.setOnClickListener(view ->
-
-                YouTubePlayerUtils.loadOrCueVideo(
-                        youTubePlayer,
-                        getLifecycle(),
-                        getPreviousVideoId(),
-                        0f
-                )
-
-        );
-        playNextVideoButton.setOnClickListener(view ->
-
-                YouTubePlayerUtils.loadOrCueVideo(
-                        youTubePlayer,
-                        getLifecycle(),
-                        getNextVideoId(),
-                        0f
-                )
-
-        );
-
-    }
+//    @Override
+//    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+//        super.onConfigurationChanged(newConfig);
+//        // Checks the orientation of the screen
+//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+//            youTubePlayerView.matchParent();
+//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+//            youTubePlayerView.wrapContent();
+//        }
+//    }
+//
+//    private void setPlayNextVideoButtonClickListener(final YouTubePlayer youTubePlayer) {
+//        Button playPreviousVideoButton = findViewById(R.id.previous_video_button);
+//        Button playNextVideoButton = findViewById(R.id.next_video_button);
+//
+//        playPreviousVideoButton.setOnClickListener(view ->
+//
+//                YouTubePlayerUtils.loadOrCueVideo(
+//                        youTubePlayer,
+//                        getLifecycle(),
+//                        getPreviousVideoId(),
+//                        0f
+//                )
+//
+//        );
+//        playNextVideoButton.setOnClickListener(view ->
+//
+//                YouTubePlayerUtils.loadOrCueVideo(
+//                        youTubePlayer,
+//                        getLifecycle(),
+//                        getNextVideoId(),
+//                        0f
+//                )
+//
+//        );
+//
+//    }
 
 
 
