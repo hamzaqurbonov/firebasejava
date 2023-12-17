@@ -35,45 +35,11 @@ import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity {
-
-
-
-
-    ListView MylistView1;
-    static ArrayList<String> nextArrayList = new ArrayList<>();
-    static ArrayList<String> previousArrayList = new ArrayList<>();
+    InitYouTubePlayer InitPlayer = new InitYouTubePlayer();
+    GetNextVideo getNextVideo = new GetNextVideo();
+    public  static ArrayList<String> nextArrayList = new ArrayList<>();
     DatabaseReference myRef;
-
-
    YouTubePlayerView youTubePlayerView;
-
-
-
-    private static final Random random = new Random();
-
-
-    public static String getPreviousVideoId() {
-        int size = previousArrayList.size();
-        int randomNext = random.nextInt(size);
-        String clon =  previousArrayList.get(randomNext);
-
-        Log.d("demo21", String.valueOf(previousArrayList));
-        Log.d("demo21", String.valueOf(previousArrayList.size()));
-        return clon;
-    }
-
-    public static String getNextVideoId() {
-        int size = nextArrayList.size();
-        int randomNext = random.nextInt(size);
-        String clon =  nextArrayList.get(randomNext);
-        previousArrayList.add(clon);
-        Log.d("demo21", String.valueOf(nextArrayList));
-        Log.d("demo21", String.valueOf(nextArrayList.size()));
-
-        return clon;
-    }
-
-
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -83,33 +49,14 @@ public class MainActivity extends AppCompatActivity {
 
         youTubePlayerView = findViewById(R.id.youtube_player_view);
 
-//        getLifecycle().addObserver(youTubePlayerView);
-//        View customPlayerUi = youTubePlayerView.inflateCustomPlayerUi(R.layout.custom_player_ui);
         initYouTubePlayerView();
-
-//        YouTubePlayerListener listener = new AbstractYouTubePlayerListener() {
-//            @Override
-//            public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-//                CustomPlayerUiController customPlayerUiController = new CustomPlayerUiController(MainActivity.this, customPlayerUi, youTubePlayer, youTubePlayerView);
-//                youTubePlayer.addListener(customPlayerUiController);
-//
-//                YouTubePlayerUtils.loadOrCueVideo(
-//                        youTubePlayer, getLifecycle(),
-//                        "pL3vbhg8Qdo", 0f
-//                );
-//            }
-//        };
-//        IFramePlayerOptions options = new IFramePlayerOptions.Builder().controls(0).build();
-//
-//        youTubePlayerView.initialize(listener, options);
 
 
 
         final ArrayAdapter<String> myArrayAdaptrer = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,nextArrayList);
-//        MylistView1 = (ListView) findViewById(R.id.listView1);
-//        MylistView1.setAdapter(myArrayAdaptrer);
-        myRef = FirebaseDatabase.getInstance().getReference();
 
+
+        myRef = FirebaseDatabase.getInstance().getReference();
         myRef.addChildEventListener(new ChildEventListener() {
             @Override
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -117,9 +64,6 @@ public class MainActivity extends AppCompatActivity {
                 String value =  snapshot.getValue(String.class);
                 nextArrayList.add(value);
                 myArrayAdaptrer.notifyDataSetChanged();
-
-//                Log.d("demo20", String.valueOf(myArrayList));
-
             }
 
             @Override
@@ -156,54 +100,59 @@ public class MainActivity extends AppCompatActivity {
             public void onReady(@NonNull YouTubePlayer youTubePlayer) {
                 CustomPlayerUiController customPlayerUiController = new CustomPlayerUiController(MainActivity.this, customPlayerUi, youTubePlayer, youTubePlayerView);
                 youTubePlayer.addListener(customPlayerUiController);
-
+                setPlayNextVideoButtonClickListener(youTubePlayer);
                 YouTubePlayerUtils.loadOrCueVideo(
                         youTubePlayer, getLifecycle(),
-                        getNextVideoId(), 0f
+                        getNextVideo.getNextVideoId(), 0f
                 );
+
+                Log.d("demo22", String.valueOf(nextArrayList));
+                Log.d("demo22", String.valueOf(nextArrayList.size()));
             }
         };
         // disable web ui
         IFramePlayerOptions options = new IFramePlayerOptions.Builder().controls(0).build();
         youTubePlayerView.initialize(listener, options);
     }
-//    @Override
-//    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-//        super.onConfigurationChanged(newConfig);
-//        // Checks the orientation of the screen
-//        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-//            youTubePlayerView.matchParent();
-//        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-//            youTubePlayerView.wrapContent();
-//        }
-//    }
-//
-//    private void setPlayNextVideoButtonClickListener(final YouTubePlayer youTubePlayer) {
-//        Button playPreviousVideoButton = findViewById(R.id.previous_video_button);
-//        Button playNextVideoButton = findViewById(R.id.next_video_button);
-//
-//        playPreviousVideoButton.setOnClickListener(view ->
-//
-//                YouTubePlayerUtils.loadOrCueVideo(
-//                        youTubePlayer,
-//                        getLifecycle(),
-//                        getPreviousVideoId(),
-//                        0f
-//                )
-//
-//        );
-//        playNextVideoButton.setOnClickListener(view ->
-//
-//                YouTubePlayerUtils.loadOrCueVideo(
-//                        youTubePlayer,
-//                        getLifecycle(),
-//                        getNextVideoId(),
-//                        0f
-//                )
-//
-//        );
-//
-//    }
+
+
+    @Override
+    public void onConfigurationChanged(@NonNull Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Checks the orientation of the screen
+        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+            youTubePlayerView.matchParent();
+        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
+            youTubePlayerView.wrapContent();
+        }
+    }
+
+    private void setPlayNextVideoButtonClickListener(final YouTubePlayer youTubePlayer) {
+        Button playPreviousVideoButton = findViewById(R.id.previous_video_button);
+        Button playNextVideoButton = findViewById(R.id.next_video_button);
+
+        playPreviousVideoButton.setOnClickListener(view ->
+
+                YouTubePlayerUtils.loadOrCueVideo(
+                        youTubePlayer,
+                        getLifecycle(),
+                        getNextVideo.getPreviousVideoId(),
+                        0f
+                )
+
+        );
+        playNextVideoButton.setOnClickListener(view ->
+
+                YouTubePlayerUtils.loadOrCueVideo(
+                        youTubePlayer,
+                        getLifecycle(),
+                        getNextVideo.getNextVideoId(),
+                        0f
+                )
+
+        );
+
+    }
 
 
 
