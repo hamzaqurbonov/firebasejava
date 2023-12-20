@@ -12,6 +12,11 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.FirebaseJava"
         tools:targetApi="31">
+        <activity android:name=".InitYouTubePlayer"
+            android:exported="true">
+<!--            android:screenOrientation="landscape"-->
+
+        </activity>
         <activity
             android:name=".MainActivity"
             android:exported="true">
