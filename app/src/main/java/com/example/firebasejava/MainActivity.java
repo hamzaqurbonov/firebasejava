@@ -159,29 +159,27 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
-    public void initYouTubePlayerView() {
+        public void initYouTubePlayerView() {
 
-        getLifecycle().addObserver(youTubePlayerView);
-        View customPlayerUi = youTubePlayerView.inflateCustomPlayerUi(R.layout.custom_player_ui);
-        YouTubePlayerListener listener = new AbstractYouTubePlayerListener() {
-            @Override
-            public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                CustomPlayerUiController customPlayerUiController = new CustomPlayerUiController(MainActivity.this, customPlayerUi, youTubePlayer, youTubePlayerView);
-                youTubePlayer.addListener(customPlayerUiController);
-                setPlayNextVideoButtonClickListener(youTubePlayer);
-                YouTubePlayerUtils.loadOrCueVideo(
-                        youTubePlayer, getLifecycle(),
-                        getNextVideo.getNextVideoId(), 0f
-                );
+            getLifecycle().addObserver(youTubePlayerView);
+                View customPlayerUi = youTubePlayerView.inflateCustomPlayerUi(R.layout.custom_player_ui);
+            YouTubePlayerListener listener = new AbstractYouTubePlayerListener() {
+                @Override
+                public void onReady(@NonNull YouTubePlayer youTubePlayer) {
+                    CustomPlayerUiController customPlayerUiController = new CustomPlayerUiController(MainActivity.this, customPlayerUi, youTubePlayer, youTubePlayerView);
+                    youTubePlayer.addListener(customPlayerUiController);
+                    setPlayNextVideoButtonClickListener(youTubePlayer);
+                    YouTubePlayerUtils.loadOrCueVideo(
+                            youTubePlayer, getLifecycle(),
+                            getNextVideo.getNextVideoId(), 0f
+                    );
 
-                Log.d("demo22", String.valueOf(nextArrayList));
-                Log.d("demo22", String.valueOf(nextArrayList.size()));
-            }
-        };
-        // disable web ui
-        IFramePlayerOptions options = new IFramePlayerOptions.Builder().controls(0).build();
-        youTubePlayerView.initialize(listener, options);
-    }
+                }
+            };
+            // disable web ui
+            IFramePlayerOptions options = new IFramePlayerOptions.Builder().controls(0).build();
+            youTubePlayerView.initialize(listener, options);
+        }
 
 
     @Override
