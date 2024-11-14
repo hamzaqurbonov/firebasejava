@@ -1,50 +1,36 @@
 package com.example.firebasejava;
 
-import static android.content.ContentValues.TAG;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.content.res.Configuration;
+
 import android.os.Bundle;
 import android.util.Log;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.ListView;
 import android.widget.TextView;
 
-import com.etebarian.meowbottomnavigation.MeowBottomNavigation;
-import com.google.firebase.database.ChildEventListener;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.utils.YouTubePlayerUtils;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Random;
+import java.util.Map;
 
-import kotlin.Unit;
-import kotlin.jvm.functions.Function1;
 
 public class MainActivity extends AppCompatActivity {
-    private MeowBottomNavigation bottomNavigation;
-    GetNextVideo getNextVideo = new GetNextVideo();
-    public  static ArrayList<String> nextArrayList = new ArrayList<>();
-    DatabaseReference myRef;
-    YouTubePlayerView youTubePlayerView;
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+
+    private DatabaseHelper databaseHelper;
+    private TextView categoryTitle, subcategoryTitle, itemTitle;
+
+    RecyclerView recyclerView;
+
+    ItemAdapter itemAdapter;
+
+    private ArrayList<ItemModel> modalArrayList;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -52,172 +38,192 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        youTubePlayerView = findViewById(R.id.youtube_player_view);
-        initYouTubePlayerView();
 
-    final ArrayAdapter<String> myArrayAdaptrer = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_list_item_1,nextArrayList);
+//        recyclerView = findViewById(R.id.rview);
+//
+//        modalArrayList = new ArrayList<>();
+//        databaseHelper = new DatabaseHelper(this);
+////
+//        modalArrayList = databaseHelper.getItemsBySubcategory();
+////
+//        adapter = new ItemAdapter(modalArrayList);
+////
+//        LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this, RecyclerView.VERTICAL, false);
+//        recyclerView.setLayoutManager(linearLayoutManager);
+////
+//        recyclerView.setAdapter(adapter);
 
-
-        myRef = FirebaseDatabase.getInstance().getReference();
-        myRef.addChildEventListener(new ChildEventListener() {
-            @Override
-            public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-                String value =  snapshot.getValue(String.class);
-                nextArrayList.add(value);
-                myArrayAdaptrer.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                myArrayAdaptrer.notifyDataSetChanged();
-            }
-
-            @Override
-            public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-
-            }
-
-            @Override
-            public void onChildMoved(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
+//        recyclerView = findViewById(R.id.rview);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//
+//        databaseHelper = new DatabaseHelper(this);
+//
+//        // Керакли кичик категория ID ни киритинг
+//        long subcategoryId = 1; // Мисол ID
+//        List<ItemModel> items = databaseHelper.getItemsBySubcategory(subcategoryId);
+//
+//        itemAdapter = new ItemAdapter(items);
+//        recyclerView.setAdapter(itemAdapter);
 
 
 
-        bottomNavigation=findViewById(R.id.bottomNavigation);
-        bottomNavigation.show(2, true);
-
-        // add your bottom navigation icon here
-        bottomNavigation.add(new MeowBottomNavigation.Model(1,R.drawable.ic_launcher_foreground));
-        bottomNavigation.add(new MeowBottomNavigation.Model(2, R.drawable.ic_launcher_foreground));
-        bottomNavigation.add(new MeowBottomNavigation.Model(3,R.drawable.ic_launcher_foreground));
-
-        bottomNavigation.setOnClickMenuListener(new Function1<MeowBottomNavigation.Model, Unit>() {
-            @Override
-            public Unit invoke(MeowBottomNavigation.Model model) {
-
-                switch(model.getId())
-                {
-                    case 1:
-                        break;
-                    case 2:
-                        break;
-                    case 3:
-                        break;
-                }
-                return null;
-            }
-        });
-
-        bottomNavigation.setOnShowListener(new Function1<MeowBottomNavigation.Model, Unit>() {
-            @Override
-            public Unit invoke(MeowBottomNavigation.Model model) {
-
-                switch(model.getId())
-                {
-                    case 1:
-                        break;
-                }
-                return null;
-            }
-        });
-
-        bottomNavigation.setOnShowListener(new Function1<MeowBottomNavigation.Model, Unit>() {
-            @Override
-            public Unit invoke(MeowBottomNavigation.Model model) {
-
-                switch(model.getId())
-                {
-                    case 2:
-                        break;
-                }
-                return null;
-            }
-        });
 
 
-        bottomNavigation.setOnShowListener(new Function1<MeowBottomNavigation.Model, Unit>() {
-            @Override
-            public Unit invoke(MeowBottomNavigation.Model model) {
+        categoryTitle = findViewById(R.id.categoryTitle);
+        subcategoryTitle = findViewById(R.id.subcategoryTitle);
+        itemTitle = findViewById(R.id.itemTitle);
+//
+        databaseHelper = new DatabaseHelper(this);
+//
+//        // Категория ва кичик тоифаларни қўшиш
+//        long categoryId1 = databaseHelper.addCategory("Жонлиолам");
+//        long subcategoryId1 = databaseHelper.addSubcategory("Табиат", categoryId1);
+//        databaseHelper.addItem("Дарё", "Сув", subcategoryId1);
+//        databaseHelper.addItem("Тоғ", "экотизими", subcategoryId1);
+//
+//        long subcategoryId2 = databaseHelper.addSubcategory("Хайвонот", categoryId1);
+//        databaseHelper.addItem("Ҳайвон", "Қуш", subcategoryId2);
+//        databaseHelper.addItem("Балиқ", "Сув", subcategoryId2);
+//
+//        long categoryId2 = databaseHelper.addCategory("Устахона");
+//        long subcategoryId3 = databaseHelper.addSubcategory("Мошина", categoryId2);
+//        databaseHelper.addItem("Феррари", "оқ", subcategoryId3);
+//        databaseHelper.addItem("БМВ", "қизил", subcategoryId3);
+//
+//        long subcategoryId4 = databaseHelper.addSubcategory("Трактор", categoryId2);
+//        databaseHelper.addItem("Трактор", "кўк", subcategoryId4);
+//        databaseHelper.addItem("Экскаватор", "сариқ", subcategoryId4);
+//
+        versiyaSQL();
+//        // Категориялар рўйхатини олиш
+        List<Category> categories = getCategoriesWithData();
+//
+        // Маълумотларни TextView га чиқариш
+        displayData(categories);
 
-                switch(model.getId())
-                {
-                    case 3:
-                        break;
-                }
-                return null;
-            }
-        });
+
+
+
+
 
 
     }
 
-        public void initYouTubePlayerView() {
+    private List<Category> getCategoriesWithData() {
+        List<Category> categories = new ArrayList<>();
 
-            getLifecycle().addObserver(youTubePlayerView);
-                View customPlayerUi = youTubePlayerView.inflateCustomPlayerUi(R.layout.custom_player_ui);
-            YouTubePlayerListener listener = new AbstractYouTubePlayerListener() {
-                @Override
-                public void onReady(@NonNull YouTubePlayer youTubePlayer) {
-                    CustomPlayerUiController customPlayerUiController = new CustomPlayerUiController(MainActivity.this, customPlayerUi, youTubePlayer, youTubePlayerView);
-                    youTubePlayer.addListener(customPlayerUiController);
-                    setPlayNextVideoButtonClickListener(youTubePlayer);
-                    YouTubePlayerUtils.loadOrCueVideo(
-                            youTubePlayer, getLifecycle(),
-                            getNextVideo.getNextVideoId(), 0f
-                    );
+        // Маълумотлар базасидан категориялар, кичик тоифа ва элементлар олинади
+        long categoryId1 = databaseHelper.addCategory("Жонлиолам");
+        long subcategoryId1 = databaseHelper.addSubcategory("Табиат", categoryId1);
+        Category category1 = new Category(categoryId1, "Жонлиолам");
+        Subcategory subcategory1 = new Subcategory(subcategoryId1, "Табиат");
 
-                }
-            };
-            // disable web ui
-            IFramePlayerOptions options = new IFramePlayerOptions.Builder().controls(0).build();
-            youTubePlayerView.initialize(listener, options);
-        }
+        // Тоифалар рўйхатини тўлдириш
+        subcategory1.addItem(new Item(1, "Дарё", "Сув"));
+        subcategory1.addItem(new Item(2, "Тоғ", "экотизими"));
+        category1.addSubcategory(subcategory1);
 
+        Subcategory subcategory2 = new Subcategory(2, "Хайвонот");
+        subcategory2.addItem(new Item(3, "Ҳайвон", "Қуш"));
+        subcategory2.addItem(new Item(4, "Балиқ", "Сув"));
+        category1.addSubcategory(subcategory2);
 
-    @Override
-    public void onConfigurationChanged(@NonNull Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        // Checks the orientation of the screen
-        if (newConfig.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-            youTubePlayerView.matchParent();
-        } else if (newConfig.orientation == Configuration.ORIENTATION_PORTRAIT) {
-            youTubePlayerView.wrapContent();
-        }
+        categories.add(category1);
+
+        Category category2 = new Category(2, "Устахона");
+        Subcategory subcategory3 = new Subcategory(3, "Мошина");
+        subcategory3.addItem(new Item(5, "Феррари", "оқ"));
+        subcategory3.addItem(new Item(6, "БМВ", "қизил"));
+        category2.addSubcategory(subcategory3);
+
+        Subcategory subcategory4 = new Subcategory(4, "Трактор");
+        subcategory4.addItem(new Item(7, "Трактор", "кўк"));
+        subcategory4.addItem(new Item(8, "Экскаватор", "сариқ"));
+        category2.addSubcategory(subcategory4);
+
+        categories.add(category2);
+
+        return categories;
     }
 
-    private void setPlayNextVideoButtonClickListener(final YouTubePlayer youTubePlayer) {
-        Button playPreviousVideoButton = findViewById(R.id.previous_video_button);
-        Button playNextVideoButton = findViewById(R.id.next_video_button);
+    private void displayData(List<Category> categories) {
+        StringBuilder categoryText = new StringBuilder();
+        StringBuilder subcategoryText = new StringBuilder();
+        StringBuilder itemText = new StringBuilder();
 
-        playPreviousVideoButton.setOnClickListener(view ->
+        for (Category category : categories) {
+            categoryText.append("Категория: ").append(category.getName()).append("\n");
+            for (Subcategory subcategory : category.getSubcategories()) {
+                subcategoryText.append("  - Кичик тоифа: ").append(subcategory.getName()).append("\n");
+                for (Item item : subcategory.getItems()) {
+                    itemText.append("    -- ").append(item.getName())
+                            .append(": ").append(item.getUrl()).append("\n");
+                }
+            }
+        }
 
-                YouTubePlayerUtils.loadOrCueVideo(
-                        youTubePlayer,
-                        getLifecycle(),
-                        getNextVideo.getPreviousVideoId(),
-                        0f
-                )
+        categoryTitle.setText(categoryText.toString());
+        subcategoryTitle.setText(subcategoryText.toString());
+        itemTitle.setText(itemText.toString());
+    }
 
-        );
-        playNextVideoButton.setOnClickListener(view ->
 
-                YouTubePlayerUtils.loadOrCueVideo(
-                        youTubePlayer,
-                        getLifecycle(),
-                        getNextVideo.getNextVideoId(),
-                        0f
-                )
 
-        );
 
+
+
+    private void versiyaSQL() {
+        Log.d("demo59" , "Found1: " );
+        // `Shorts` коллекциясидан барча ҳужжатларни оламиз
+        db.collection("Test")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+//                        dbHome.deleteAllData();
+                        for (DocumentSnapshot mainDoc : task.getResult()) {
+                            String mainDocId = mainDoc.getId();
+                            long categoryId =  databaseHelper.addCategory(mainDocId);
+
+                            Log.d("demo59" , "Found1: " + mainDocId);
+                            // Ҳар бир ҳужжат ичидаги коллекцияни оламиз (масалан, "tabiat" ёки "Ustaxona")
+                            db.collection("Test").document(mainDocId).collection(mainDocId)
+                                    .get()
+                                    .addOnCompleteListener(subTask -> {
+                                        if (subTask.isSuccessful()) {
+                                            for (DocumentSnapshot subDoc : subTask.getResult()) {
+                                                String subDocId = subDoc.getId();
+                                                long subcategoryId =  databaseHelper.addSubcategory(subDocId, categoryId);
+
+                                                // Ҳар бир ҳужжат ичидаги `key` массивини оламиз
+                                                List<Map<String, Object>> keyArray = (List<Map<String, Object>>) subDoc.get("key");
+
+                                                if (keyArray != null) {
+                                                    for (Map<String, Object> mapItem : keyArray) {
+                                                        // `id` ва `img` қийматларни оламиз
+                                                        String id = (String) mapItem.get("id");
+                                                        String url = (String) mapItem.get("url");
+                                                        databaseHelper.addItem(id,url, subcategoryId);
+//                                                        dbHome.addNewCourse(
+//                                                                (String) mapItem.get("id"),
+//                                                                (String) mapItem.get("url"),
+//                                                                (String) mapItem.get("img"),
+//                                                                (String) mapItem.get("youngNumber").toString());
+                                                        Log.d("demo59" , "Found1: " + mapItem.get("id"));
+//                                                        Log.d("demo56", "Menu: " + mainDocId + ", SubMenu: " + subDocId + ", ID: " + id + ", IMG: " + img);
+                                                    }
+                                                }
+                                            }
+
+
+                                        } else {
+                                            Log.d("Firestore", "Ички коллекцияни олишда хатолик", subTask.getException());
+                                        }
+                                    });
+                        }
+                    } else {
+                        Log.d("Firestore", "Асосий ҳужжатларни олишда хатолик", task.getException());
+                    }
+                });
     }
 
 
