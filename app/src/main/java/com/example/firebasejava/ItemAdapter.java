@@ -8,25 +8,25 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
+// ItemAdapter.java
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
-
     private List<ItemModel> itemList;
 
     public ItemAdapter(List<ItemModel> itemList) {
         this.itemList = itemList;
     }
 
-    @NonNull
     @Override
-    public ItemViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.item_layout, parent, false);
+    public ItemViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext())
+                .inflate(R.layout.item_layout, parent, false);
         return new ItemViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
+    public void onBindViewHolder(ItemViewHolder holder, int position) {
         ItemModel item = itemList.get(position);
-        holder.idTextView.setText(item.getId());
+        holder.nameTextView.setText(item.getName());
         holder.urlTextView.setText(item.getUrl());
     }
 
@@ -36,11 +36,11 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     }
 
     public static class ItemViewHolder extends RecyclerView.ViewHolder {
-        TextView idTextView, urlTextView;
+        TextView nameTextView, urlTextView;
 
-        public ItemViewHolder(@NonNull View itemView) {
+        public ItemViewHolder(View itemView) {
             super(itemView);
-            idTextView = itemView.findViewById(R.id.idTextView);
+            nameTextView = itemView.findViewById(R.id.nameTextView);
             urlTextView = itemView.findViewById(R.id.urlTextView);
         }
     }

@@ -38,35 +38,34 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        // Category table creation
-        String CREATE_CATEGORY_TABLE = "CREATE TABLE " + TABLE_CATEGORY + "("
-                + COLUMN_CATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + COLUMN_CATEGORY_NAME + " TEXT NOT NULL)";
+        // items жадвалини яратиш
+        String CREATE_ITEMS_TABLE = "CREATE TABLE items (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "name TEXT, " +
+                "url TEXT, " +
+                "subcategoryId INTEGER)";
+        db.execSQL(CREATE_ITEMS_TABLE);
+
+        // Category жадвалини яратиш
+        String CREATE_CATEGORY_TABLE = "CREATE TABLE categories (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "name TEXT)";
         db.execSQL(CREATE_CATEGORY_TABLE);
 
-        // Subcategory table creation
-        String CREATE_SUBCATEGORY_TABLE = "CREATE TABLE " + TABLE_SUBCATEGORY + "("
-                + COLUMN_SUBCATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + COLUMN_SUBCATEGORY_NAME + " TEXT NOT NULL,"
-                + COLUMN_CATEGORY_ID_FK + " INTEGER,"
-                + "FOREIGN KEY(" + COLUMN_CATEGORY_ID_FK + ") REFERENCES " + TABLE_CATEGORY + "(" + COLUMN_CATEGORY_ID + "))";
+        // Subcategory жадвалини яратиш
+        String CREATE_SUBCATEGORY_TABLE = "CREATE TABLE subcategories (" +
+                "id INTEGER PRIMARY KEY AUTOINCREMENT, " +
+                "name TEXT, " +
+                "categoryId INTEGER)";
         db.execSQL(CREATE_SUBCATEGORY_TABLE);
-
-        // Item table creation
-        String CREATE_ITEM_TABLE = "CREATE TABLE " + TABLE_ITEM + "("
-                + COLUMN_ITEM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
-                + COLUMN_ID + " TEXT NOT NULL,"
-                + COLUMN_URL + " TEXT NOT NULL,"
-                + COLUMN_SUBCATEGORY_ID_FK + " INTEGER,"
-                + "FOREIGN KEY(" + COLUMN_SUBCATEGORY_ID_FK + ") REFERENCES " + TABLE_SUBCATEGORY + "(" + COLUMN_SUBCATEGORY_ID + "))";
-        db.execSQL(CREATE_ITEM_TABLE);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORY);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_SUBCATEGORY);
-        db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEM);
+        // Жадваллар мавжуд бўлса, уларни ўчириш
+        db.execSQL("DROP TABLE IF EXISTS items");
+        db.execSQL("DROP TABLE IF EXISTS categories");
+        db.execSQL("DROP TABLE IF EXISTS subcategories");
         onCreate(db);
     }
 
@@ -88,51 +87,50 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Insert item
-    public long addItem(String id, String url, long subcategoryId) {
-        SQLiteDatabase db = this.getWritableDatabase();
+    public void addItem(SQLiteDatabase db, ItemModel item) {
         ContentValues values = new ContentValues();
-        values.put(COLUMN_ID, id);
-        values.put(COLUMN_URL, url);
-        values.put(COLUMN_SUBCATEGORY_ID_FK, subcategoryId);
-        return db.insert(TABLE_ITEM, null, values);
+        values.put("name", item.getName());
+        values.put("url", item.getUrl());
+        values.put("subcategoryId", item.getSubcategoryId());
+        db.insert("items", null, values);
     }
 
     // Get all items in a subcategory
-    public List<String> getItemsBySubcategory(long subcategoryId) {
-        List<String> items = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-        String selectQuery = "SELECT " + COLUMN_ID + ", " + COLUMN_URL + " FROM " + TABLE_ITEM
-                + " WHERE " + COLUMN_SUBCATEGORY_ID_FK + "=?";
-        Cursor cursor = db.rawQuery(selectQuery, new String[]{String.valueOf(subcategoryId)});
-        if (cursor.moveToFirst()) {
-            do {
-                items.add("ID: " + cursor.getString(0) + ", URL: " + cursor.getString(1));
-            } while (cursor.moveToNext());
-        }
-        cursor.close();
-        return items;
-    }
-
-//    public List<ItemModel> getItemsBySubcategory(long subcategoryId) {
-//        List<ItemModel> itemList = new ArrayList<>();
+//    public List<String> getItemsBySubcategory(long subcategoryId) {
+//        List<String> items = new ArrayList<>();
 //        SQLiteDatabase db = this.getReadableDatabase();
-//
-//        String query = "SELECT * FROM items WHERE subcategoryId = ?";
-//        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(subcategoryId)});
-//
+//        String selectQuery = "SELECT " + COLUMN_ID + ", " + COLUMN_URL + " FROM " + TABLE_ITEM
+//                + " WHERE " + COLUMN_SUBCATEGORY_ID_FK + "=?";
+//        Cursor cursor = db.rawQuery(selectQuery, new String[]{String.valueOf(subcategoryId)});
 //        if (cursor.moveToFirst()) {
 //            do {
-//                long id = cursor.getLong(cursor.getColumnIndex("id"));
-//                String name = cursor.getString(cursor.getColumnIndex("name"));
-//                String url = cursor.getString(cursor.getColumnIndex("url"));
-//                itemList.add(new ItemModel(id, name, url, subcategoryId));
+//                items.add("ID: " + cursor.getString(0) + ", URL: " + cursor.getString(1));
 //            } while (cursor.moveToNext());
 //        }
-//
 //        cursor.close();
-//        db.close();
-//        return itemList;
+//        return items;
 //    }
+
+    public List<ItemModel> getItemsBySubcategory(long subcategoryId) {
+        List<ItemModel> itemList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM items WHERE subcategoryId = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(subcategoryId)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                long id = cursor.getLong(cursor.getColumnIndex("id"));
+                String name = cursor.getString(cursor.getColumnIndex("name"));
+                String url = cursor.getString(cursor.getColumnIndex("url"));
+                itemList.add(new ItemModel(id, name, url, subcategoryId));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return itemList;
+    }
 
 
 

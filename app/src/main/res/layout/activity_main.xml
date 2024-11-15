@@ -4,38 +4,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/categoryTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Category"
-        android:textSize="20sp"
-        android:padding="8dp"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:id="@+id/subcategoryTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Subcategory"
-        android:textSize="18sp"
-        android:padding="8dp"
-        android:textStyle="bold"/>
-
-    <TextView
-        android:id="@+id/itemTitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Item"
-        android:textSize="16sp"
-        android:padding="8dp"/>
-
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rview"
+        android:id="@+id/recyclerView"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:fadeScrollbars="true"
-
-
-        />
+        android:layout_height="match_parent"/>
 </LinearLayout>
