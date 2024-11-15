@@ -52,7 +52,6 @@ public class MainActivity extends AppCompatActivity {
         db.close();
 
 
-
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
@@ -93,9 +92,6 @@ public class MainActivity extends AppCompatActivity {
 //        recyclerView.setAdapter(itemAdapter);
 
 
-
-
-
 //        categoryTitle = findViewById(R.id.categoryTitle);
 //        subcategoryTitle = findViewById(R.id.subcategoryTitle);
 //        itemTitle = findViewById(R.id.itemTitle);
@@ -121,17 +117,12 @@ public class MainActivity extends AppCompatActivity {
 //        databaseHelper.addItem("Трактор", "кўк", subcategoryId4);
 //        databaseHelper.addItem("Экскаватор", "сариқ", subcategoryId4);
 //
-//        versiyaSQL();
+        versiyaSQL();
 ////        // Категориялар рўйхатини олиш
 //        List<Category> categories = getCategoriesWithData();
 ////
 //        // Маълумотларни TextView га чиқариш
 //        displayData(categories);
-
-
-
-
-
 
 
     }
@@ -195,59 +186,60 @@ public class MainActivity extends AppCompatActivity {
 //    }
 
 
+    private void versiyaSQL() {
+        Log.d("demo59", "Found1: ");
+        // `Shorts` коллекциясидан барча ҳужжатларни оламиз
+        db.collection("Test")
+                .get()
+                .addOnCompleteListener(task -> {
+                    if (task.isSuccessful()) {
+//                        dbHome.deleteAllData();
+                        for (DocumentSnapshot mainDoc : task.getResult()) {
+                            String mainDocId = mainDoc.getId();
+                            long categoryId = databaseHelper.addCategory(mainDocId);
+
+                            Log.d("demo59", "Found1: " + mainDocId);
+                            // Ҳар бир ҳужжат ичидаги коллекцияни оламиз (масалан, "tabiat" ёки "Ustaxona")
+                            db.collection("Test").document(mainDocId).collection(mainDocId)
+                                    .get()
+                                    .addOnCompleteListener(subTask -> {
+                                        if (subTask.isSuccessful()) {
+                                            for (DocumentSnapshot subDoc : subTask.getResult()) {
+                                                String subDocId = subDoc.getId();
+                                                long subcategoryId = databaseHelper.addSubcategory(subDocId, categoryId);
+
+                                                // Ҳар бир ҳужжат ичидаги `key` массивини оламиз
+                                                List<Map<String, Object>> keyArray = (List<Map<String, Object>>) subDoc.get("key");
+                                                SQLiteDatabase db = databaseHelper.getWritableDatabase();
+
+                                                if (keyArray != null) {
+                                                    for (Map<String, Object> mapItem : keyArray) {
+                                                        // `id` ва `img` қийматларни оламиз
+                                                        String id = (String) mapItem.get("id");
+                                                        String url = (String) mapItem.get("url");
+                                                        ItemModel newItem = new ItemModel(1, id, url, subcategoryId);
+
+                                                        databaseHelper.addItem(db, newItem);
+
+                                                        Log.d("demo59", "Found1: " + mapItem.get("id"));
+//                                                        Log.d("demo56", "Menu: " + mainDocId + ", SubMenu: " + subDocId + ", ID: " + id + ", IMG: " + img);
+                                                    }
+                                                }
+                                            }
 
 
+                                        } else {
+                                            Log.d("Firestore", "Ички коллекцияни олишда хатолик", subTask.getException());
+                                        }
+                                    });
+                        }
+                    } else {
+                        Log.d("Firestore", "Асосий ҳужжатларни олишда хатолик", task.getException());
+                    }
+                });
 
-
-//    private void versiyaSQL() {
-//        Log.d("demo59" , "Found1: " );
-//        // `Shorts` коллекциясидан барча ҳужжатларни оламиз
-//        db.collection("Test")
-//                .get()
-//                .addOnCompleteListener(task -> {
-//                    if (task.isSuccessful()) {
-////                        dbHome.deleteAllData();
-//                        for (DocumentSnapshot mainDoc : task.getResult()) {
-//                            String mainDocId = mainDoc.getId();
-//                            long categoryId =  databaseHelper.addCategory(mainDocId);
-//
-//                            Log.d("demo59" , "Found1: " + mainDocId);
-//                            // Ҳар бир ҳужжат ичидаги коллекцияни оламиз (масалан, "tabiat" ёки "Ustaxona")
-//                            db.collection("Test").document(mainDocId).collection(mainDocId)
-//                                    .get()
-//                                    .addOnCompleteListener(subTask -> {
-//                                        if (subTask.isSuccessful()) {
-//                                            for (DocumentSnapshot subDoc : subTask.getResult()) {
-//                                                String subDocId = subDoc.getId();
-//                                                long subcategoryId =  databaseHelper.addSubcategory(subDocId, categoryId);
-//
-//                                                // Ҳар бир ҳужжат ичидаги `key` массивини оламиз
-//                                                List<Map<String, Object>> keyArray = (List<Map<String, Object>>) subDoc.get("key");
-//
-//                                                if (keyArray != null) {
-//                                                    for (Map<String, Object> mapItem : keyArray) {
-//                                                        // `id` ва `img` қийматларни оламиз
-//                                                        String id = (String) mapItem.get("id");
-//                                                        String url = (String) mapItem.get("url");
-//                                                        databaseHelper.addItem(id,url, subcategoryId);
-//
-//                                                        Log.d("demo59" , "Found1: " + mapItem.get("id"));
-////                                                        Log.d("demo56", "Menu: " + mainDocId + ", SubMenu: " + subDocId + ", ID: " + id + ", IMG: " + img);
-//                                                    }
-//                                                }
-//                                            }
-//
-//
-//                                        } else {
-//                                            Log.d("Firestore", "Ички коллекцияни олишда хатолик", subTask.getException());
-//                                        }
-//                                    });
-//                        }
-//                    } else {
-//                        Log.d("Firestore", "Асосий ҳужжатларни олишда хатолик", task.getException());
-//                    }
-//                });
     }
+}
 
 
 
