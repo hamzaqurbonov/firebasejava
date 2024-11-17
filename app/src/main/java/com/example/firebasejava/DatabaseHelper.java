@@ -98,6 +98,22 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    public String getSubcategoryName(long subcategoryId) {
+        SQLiteDatabase db = this.getReadableDatabase();
+        String subcategoryName = null;
+
+        String query = "SELECT " + COLUMN_SUBCATEGORY_NAME + " FROM " + TABLE_SUBCATEGORY + " WHERE " + COLUMN_SUBCATEGORY_ID + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(subcategoryId)});
+
+        if (cursor.moveToFirst()) {
+            subcategoryName = cursor.getString(cursor.getColumnIndex(COLUMN_SUBCATEGORY_NAME));
+        }
+
+        cursor.close();
+        db.close();
+        return subcategoryName;
+    }
+
     public List<ItemModel> getItemsBySubcategory(long subcategoryId) {
         List<ItemModel> itemList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();

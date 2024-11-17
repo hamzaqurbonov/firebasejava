@@ -41,7 +41,20 @@ public class MainActivity extends AppCompatActivity {
 
         databaseHelper = new DatabaseHelper(this);
 
-        versiyaSQL();
+
+        DatabaseHelper dbHelper = new DatabaseHelper(this);
+        long subcategory = 3; // Охирги ID ёки ўзингизга керакли ID
+        String subcategoryName = dbHelper.getSubcategoryName(subcategory);
+
+        if (subcategoryName != null) {
+            Log.d("demo47", "Номи: " + subcategoryName);
+        } else {
+            Log.d("demo47", "Бундай Subcategory топилмади");
+        }
+
+
+
+//        versiyaSQL();
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
