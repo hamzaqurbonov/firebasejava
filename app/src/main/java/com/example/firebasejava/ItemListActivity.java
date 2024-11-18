@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ItemListActivity extends AppCompatActivity {
 
@@ -19,6 +20,7 @@ public class ItemListActivity extends AppCompatActivity {
     private DatabaseHelper databaseHelper;
     private ItemAdapter itemAdapter;
     private List<ItemModel> itemList;
+    String subcategoryId;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -34,16 +36,16 @@ public class ItemListActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
 
         // Intent орқали `subcategoryId` олиш
-//        long subcategoryId = getIntent().getLongExtra("subcategoryId", -1);
+        int subcategoryId = getIntent().getIntExtra("subcategory", -1);
 
 //        long subcategoryId = getIntent().getLongExtra("subcategory", 3);
 
-        String subcategoryId = getIntent().getExtras().getString("subcategory");
+//        subcategoryId = Objects.requireNonNull(getIntent().getExtras()).getString("subcategory");
       Log.d("demo60", "ItemListActivity: " + subcategoryId);
 
 
         // Маълумотларни фильтрлаш
-        itemList = databaseHelper.getItemsBySubcategory(3);
+        itemList = databaseHelper.getItemsBySubcategory(subcategoryId);
 
         // RecyclerView тайёрлаш
         itemAdapter = new ItemAdapter(itemList);

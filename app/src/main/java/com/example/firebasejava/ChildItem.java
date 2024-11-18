@@ -5,7 +5,7 @@ public class ChildItem {
     private String text;
 
     String img;
-    private int categoryId;
+     int categoryId;
 
     public ChildItem( String img, String text, int categoryId) {
         this.imageResId = imageResId;

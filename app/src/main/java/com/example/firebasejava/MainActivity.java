@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         databaseHelper = new DatabaseHelper(this);
-        versiyaSQL();
+//        versiyaSQL();
         RecyclerView parentRecyclerView = findViewById(R.id.parent_recycler_view);
 
 
