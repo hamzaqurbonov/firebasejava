@@ -42,30 +42,22 @@ import java.util.List;
 //}
 
 
+
+
 public class Subcategory {
-    private int id;
-    private String name;
+    private String title;
     private List<Item> items;
 
-    public Subcategory(int id, String name) {
-        this.id = id;
-        this.name = name;
-        this.items = new ArrayList<>();
+    public Subcategory(String title, List<Item> items) {
+        this.title = title;
+        this.items = items;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     public List<Item> getItems() {
         return items;
-    }
-
-    public void addItem(Item item) {
-        this.items.add(item);
     }
 }

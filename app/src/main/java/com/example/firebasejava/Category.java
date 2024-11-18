@@ -39,31 +39,50 @@ import java.util.List;
 //}
 
 
+//public class Category {
+//    private int id;
+//    private String name;
+//    private List<Subcategory> subcategories;
+//
+//    public Category(int id, String name) {
+//        this.id = id;
+//        this.name = name;
+//        this.subcategories = new ArrayList<>();
+//    }
+//
+//    public int getId() {
+//        return id;
+//    }
+//
+//    public String getName() {
+//        return name;
+//    }
+//
+//    public List<Subcategory> getSubcategories() {
+//        return subcategories;
+//    }
+//
+//    public void addSubcategory(Subcategory subcategory) {
+//        this.subcategories.add(subcategory);
+//    }
+//}
+
 public class Category {
-    private int id;
-    private String name;
+    private String title;
     private List<Subcategory> subcategories;
 
-    public Category(int id, String name) {
-        this.id = id;
-        this.name = name;
-        this.subcategories = new ArrayList<>();
+    public Category(String title, List<Subcategory> subcategories) {
+        this.title = title;
+        this.subcategories = subcategories;
     }
 
-    public int getId() {
-        return id;
-    }
-
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
     public List<Subcategory> getSubcategories() {
         return subcategories;
     }
-
-    public void addSubcategory(Subcategory subcategory) {
-        this.subcategories.add(subcategory);
-    }
 }
+
 
