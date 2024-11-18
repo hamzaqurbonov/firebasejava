@@ -24,19 +24,48 @@ import java.util.List;
 //    }
 //}
 
-public class Subcategory {
-    private long id;
-    private String name;
-    private long categoryId;
+//public class Subcategory {
+//    private long id;
+//    private String name;
+//    private long categoryId;
+//
+//    // Конструктор, геттер ва сеттерлар
+//    public Subcategory(long id, String name, long categoryId) {
+//        this.id = id;
+//        this.name = name;
+//        this.categoryId = categoryId;
+//    }
+//
+//    public long getId() { return id; }
+//    public String getName() { return name; }
+//    public long getCategoryId() { return categoryId; }
+//}
 
-    // Конструктор, геттер ва сеттерлар
-    public Subcategory(long id, String name, long categoryId) {
+
+public class Subcategory {
+    private int id;
+    private String name;
+    private List<Item> items;
+
+    public Subcategory(int id, String name) {
         this.id = id;
         this.name = name;
-        this.categoryId = categoryId;
+        this.items = new ArrayList<>();
     }
 
-    public long getId() { return id; }
-    public String getName() { return name; }
-    public long getCategoryId() { return categoryId; }
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public List<Item> getItems() {
+        return items;
+    }
+
+    public void addItem(Item item) {
+        this.items.add(item);
+    }
 }

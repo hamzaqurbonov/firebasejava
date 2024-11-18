@@ -24,15 +24,19 @@ import java.util.Map;
 public class MainActivity extends AppCompatActivity {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
 
+//    private DatabaseHelper databaseHelper;
+//    private TextView categoryTitle, subcategoryTitle, itemTitle;
+//
+//    RecyclerView recyclerView;
+//
+//    ItemAdapter itemAdapter;
+//    private List<Category> categoryList;
+//
+//    private ArrayList<ItemModel> modalArrayList;
+
+    private RecyclerView recyclerView;
+    private MultiLevelAdapter adapter;
     private DatabaseHelper databaseHelper;
-    private TextView categoryTitle, subcategoryTitle, itemTitle;
-
-    RecyclerView recyclerView;
-
-    ItemAdapter itemAdapter;
-    private List<Category> categoryList;
-
-    private ArrayList<ItemModel> modalArrayList;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -40,49 +44,78 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        databaseHelper = new DatabaseHelper(this);
-
-
-//        long subcategory = 2; // Охирги ID ёки ўзингизга керакли ID
-        categoryList = databaseHelper.getAllCategories();
-        Log.d("demo47", "Номи_Catigory: " + categoryList.toString());
-//        if (CategoryArrayList != null) {
-//            Log.d("demo47", "Номи: " + CategoryArrayList);
-//        } else {
-//            Log.d("demo47", "Бундай Subcategory топилмади");
-//        }
-
-
-
-
-
-        DatabaseHelper dbHelper = new DatabaseHelper(this);
-        long subcategory = 2; // Охирги ID ёки ўзингизга керакли ID
-        String subcategoryName = dbHelper.getSubcategoryName(subcategory);
-
-        if (subcategoryName != null) {
-            Log.d("demo47", "Номи: " + subcategoryName);
-        } else {
-            Log.d("demo47", "Бундай Subcategory топилмади");
-        }
-
-
-
-//        versiyaSQL();
 
         recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
+        databaseHelper = new DatabaseHelper(this);
+
+        List<Category> categories = databaseHelper.getCategoriesWithSubcategoriesAndItems();
+        List<Object> dataList = prepareData(categories);
+
+        adapter = new MultiLevelAdapter(this, dataList);
+        recyclerView.setAdapter(adapter);
+
+
+
 //        databaseHelper = new DatabaseHelper(this);
-
-        // Керакли кичик категория ID ни киритинг
-        long subcategoryId = 3; // Мисол ID
-        List<ItemModel> items = databaseHelper.getItemsBySubcategory(subcategoryId);
-
-        itemAdapter = new ItemAdapter(categoryList);
-        recyclerView.setAdapter(itemAdapter);
+//
+//
+////        long subcategory = 2; // Охирги ID ёки ўзингизга керакли ID
+//        categoryList = databaseHelper.getAllCategories();
+//        Log.d("demo47", "Номи_Catigory: " + categoryList.toString());
+////        if (CategoryArrayList != null) {
+////            Log.d("demo47", "Номи: " + CategoryArrayList);
+////        } else {
+////            Log.d("demo47", "Бундай Subcategory топилмади");
+////        }
+//
+//
+//
+//
+//
+//        DatabaseHelper dbHelper = new DatabaseHelper(this);
+//        long subcategory = 2; // Охирги ID ёки ўзингизга керакли ID
+//        String subcategoryName = dbHelper.getSubcategoryName(subcategory);
+//
+//        if (subcategoryName != null) {
+//            Log.d("demo47", "Номи: " + subcategoryName);
+//        } else {
+//            Log.d("demo47", "Бундай Subcategory топилмади");
+//        }
+//
+//
+//
+////        versiyaSQL();
+//
+//        recyclerView = findViewById(R.id.recyclerView);
+//        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+//
+////        databaseHelper = new DatabaseHelper(this);
+//
+//        // Керакли кичик категория ID ни киритинг
+//        long subcategoryId = 3; // Мисол ID
+//        List<ItemModel> items = databaseHelper.getItemsBySubcategory(subcategoryId);
+//
+//        itemAdapter = new ItemAdapter(categoryList);
+//        recyclerView.setAdapter(itemAdapter);
 
     }
+
+    private List<Object> prepareData(List<Category> categories) {
+        List<Object> dataList = new ArrayList<>();
+        for (Category category : categories) {
+            dataList.add(category);
+            for (Subcategory subcategory : category.getSubcategories()) {
+                dataList.add(subcategory);
+                dataList.addAll(subcategory.getItems());
+            }
+        }
+        return dataList;
+    }
+
+
+
 
 
     private void versiyaSQL() {
