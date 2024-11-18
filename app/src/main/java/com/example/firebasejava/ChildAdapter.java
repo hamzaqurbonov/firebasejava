@@ -47,10 +47,11 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
         holder.itemView.setOnClickListener(v -> {
             Context context = holder.itemView.getContext();
 
-            Log.d("demo59", "getCategoryId(): " + childItem.getCategoryId());
-//            Intent intent = new Intent(context, ItemListActivity.class);
-//            intent.putExtra("subcategoryId", childItem.getCategoryId());
-//            context.startActivity(intent);
+
+            Intent intent = new Intent(context, ItemListActivity.class);
+            intent.putExtra("subcategory", childItem.getCategoryId());
+            Log.d("demo60", "getCategoryId(): " + childItem.getCategoryId());
+            context.startActivity(intent);
         });
 
     }

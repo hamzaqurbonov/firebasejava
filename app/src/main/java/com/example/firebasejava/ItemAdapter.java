@@ -31,12 +31,12 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         ItemModel item = itemList.get(position);
-//        holder.textView.setText(item.getName());
+        holder.textView.setText(item.getName());
 
-//        Glide.with(holder.itemView.getContext())
-//                .load(item.getUrl())
-//                .placeholder(R.drawable.baseline_add_circle_outline_24)
-//                .into(holder.imageView);
+        Glide.with(holder.itemView.getContext())
+                .load(item.getUrl())
+                .placeholder(R.drawable.baseline_add_circle_outline_24)
+                .into(holder.imageView);
     }
 
     @Override
@@ -50,8 +50,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
         public ItemViewHolder(@NonNull View itemView) {
             super(itemView);
-//            imageView = itemView.findViewById(R.id.item_image);
-//            textView = itemView.findViewById(R.id.item_text);
+            imageView = itemView.findViewById(R.id.item_image);
+            textView = itemView.findViewById(R.id.item_text);
         }
     }
 }
