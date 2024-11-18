@@ -97,56 +97,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return db.insert(TABLE_ITEM, null, values);
     }
 
-//    public List<Category> getCategoriesWithSubcategoriesAndItems() {
-//        List<Category> categoryList = new ArrayList<>();
-//        SQLiteDatabase db = this.getReadableDatabase();
-//
-//        // Categoryларни олиш
-//        Cursor categoryCursor = db.rawQuery("SELECT * FROM " + TABLE_CATEGORY, null);
-//        if (categoryCursor.moveToFirst()) {
-//            do {
-//                int categoryId = categoryCursor.getInt(categoryCursor.getColumnIndexOrThrow(COLUMN_CATEGORY_ID));
-//                String categoryName = categoryCursor.getString(categoryCursor.getColumnIndexOrThrow(COLUMN_CATEGORY_NAME));
-//                Category category = new Category(categoryId, categoryName);
-//
-//                // Subcategoryларни олиш
-//                Cursor subcategoryCursor = db.rawQuery("SELECT * FROM " + TABLE_SUBCATEGORY +
-//                        " WHERE " + COLUMN_CATEGORY_ID_FK + " = ?", new String[]{String.valueOf(categoryId)});
-//                if (subcategoryCursor.moveToFirst()) {
-//                    do {
-//                        int subcategoryId = subcategoryCursor.getInt(subcategoryCursor.getColumnIndexOrThrow(COLUMN_SUBCATEGORY_ID));
-//                        String subcategoryName = subcategoryCursor.getString(subcategoryCursor.getColumnIndexOrThrow(COLUMN_SUBCATEGORY_NAME));
-//                        Subcategory subcategory = new Subcategory(subcategoryId, subcategoryName);
-//
-//                        // Itemларни олиш
-//                        Cursor itemCursor = db.rawQuery("SELECT * FROM " + TABLE_ITEM +
-//                                " WHERE " + COLUMN_SUBCATEGORY_ID_FK + " = ?", new String[]{String.valueOf(subcategoryId)});
-//                        if (itemCursor.moveToFirst()) {
-//                            do {
-//                                int itemId = itemCursor.getInt(itemCursor.getColumnIndexOrThrow(COLUMN_ITEM_ID));
-//                                String itemName = itemCursor.getString(itemCursor.getColumnIndexOrThrow(COLUMN_ID)); // `COLUMN_ID`га ном беришни аниқлаштиринг.
-//                                subcategory.addItem(new Item(itemId, itemName));
-//                            } while (itemCursor.moveToNext());
-//                        }
-//                        itemCursor.close();
-//
-//                        category.addSubcategory(subcategory);
-//                    } while (subcategoryCursor.moveToNext());
-//                }
-//                subcategoryCursor.close();
-//
-//                categoryList.add(category);
-//            } while (categoryCursor.moveToNext());
-//        }
-//        categoryCursor.close();
-//        return categoryList;
-//    }
-
-
-
-
-
-
 //    public List<Category> getAllCategories() {
 //        List<Category> categoryList = new ArrayList<>();
 //        SQLiteDatabase db = this.getReadableDatabase();
@@ -164,30 +114,47 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        return categoryList;
 //    }
 
+    public List<Category> getAllCategories() {
+        List<Category> categoryList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_CATEGORY;
 
-//    public ArrayList<Category> readCourses() {
-//
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        Cursor cursorCourses = db.rawQuery("SELECT * FROM " + TABLE_CATEGORY, null);
-//
-//        ArrayList<Category> courseModalArrayList = new ArrayList<>();
-//
-//        if (cursorCourses.moveToFirst()) {
-//            do {
-//                int Id = Integer.parseInt(cursorCourses.getString(1));
-//                String courseTracks = cursorCourses.getString(1);
-////                String courseTest = cursorCourses.getString(2);
-//                courseModalArrayList.add(new Category(Id, courseTracks));
-//
-////                courseModalArrayList.add(new LakeModel(
-////                        cursorCourses.getString(1),
-////                        cursorCourses.getString(2)
-////                ));
-//            } while (cursorCourses.moveToNext());
-//        }
-//        cursorCourses.close();
-//        return courseModalArrayList;
-//    }
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY_ID));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY_NAME));
+                Category category = new Category(id, name);
+
+                // Subcategoriesни қўшиш
+                List<Subcategory> subcategories = getSubcategoriesByCategoryId(id);
+                for (Subcategory subcategory : subcategories) {
+                    category.addSubcategory(subcategory);
+                }
+                categoryList.add(category);
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return categoryList;
+    }
+
+
+    public List<Subcategory> getSubcategoriesByCategoryId(int categoryId) {
+        List<Subcategory> subcategoryList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_SUBCATEGORY + " WHERE " + COLUMN_CATEGORY_ID_FK + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(categoryId)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SUBCATEGORY_ID));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SUBCATEGORY_NAME));
+                subcategoryList.add(new Subcategory(id, name, categoryId));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return subcategoryList;
+    }
 
 
 

@@ -44,20 +44,45 @@ import java.util.List;
 
 
 
+//public class Subcategory {
+//    private String title;
+//    private List<Item> items;
+//
+//    public Subcategory(String title, List<Item> items) {
+//        this.title = title;
+//        this.items = items;
+//    }
+//
+//    public String getTitle() {
+//        return title;
+//    }
+//
+//    public List<Item> getItems() {
+//        return items;
+//    }
+//}
+
 public class Subcategory {
-    private String title;
-    private List<Item> items;
+    private int id;
+    private String name;
+    private int categoryId;
 
-    public Subcategory(String title, List<Item> items) {
-        this.title = title;
-        this.items = items;
+    public Subcategory(int id, String name, int categoryId) {
+        this.id = id;
+        this.name = name;
+        this.categoryId = categoryId;
     }
 
-    public String getTitle() {
-        return title;
+    public int getId() {
+        return id;
     }
 
-    public List<Item> getItems() {
-        return items;
+    public String getName() {
+        return name;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
     }
 }
+
