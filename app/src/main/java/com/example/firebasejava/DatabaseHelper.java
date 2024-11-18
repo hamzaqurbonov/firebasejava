@@ -98,6 +98,51 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+    public List<Category> getAllCategories() {
+        List<Category> categoryList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "SELECT * FROM " + TABLE_CATEGORY;
+
+        Cursor cursor = db.rawQuery(query, null);
+        if (cursor.moveToFirst()) {
+            do {
+                int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY_ID));
+                String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY_NAME));
+                categoryList.add(new Category(id, name));
+            } while (cursor.moveToNext());
+        }
+        cursor.close();
+        return categoryList;
+    }
+
+
+//    public ArrayList<Category> readCourses() {
+//
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        Cursor cursorCourses = db.rawQuery("SELECT * FROM " + TABLE_CATEGORY, null);
+//
+//        ArrayList<Category> courseModalArrayList = new ArrayList<>();
+//
+//        if (cursorCourses.moveToFirst()) {
+//            do {
+//                int Id = Integer.parseInt(cursorCourses.getString(1));
+//                String courseTracks = cursorCourses.getString(1);
+////                String courseTest = cursorCourses.getString(2);
+//                courseModalArrayList.add(new Category(Id, courseTracks));
+//
+////                courseModalArrayList.add(new LakeModel(
+////                        cursorCourses.getString(1),
+////                        cursorCourses.getString(2)
+////                ));
+//            } while (cursorCourses.moveToNext());
+//        }
+//        cursorCourses.close();
+//        return courseModalArrayList;
+//    }
+
+
+
+
     public String getSubcategoryName(long subcategoryId) {
         SQLiteDatabase db = this.getReadableDatabase();
         String subcategoryName = null;

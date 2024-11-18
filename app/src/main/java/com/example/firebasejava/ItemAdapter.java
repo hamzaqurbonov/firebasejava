@@ -10,9 +10,9 @@ import java.util.List;
 
 // ItemAdapter.java
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
-    private List<ItemModel> itemList;
+    private List<Category> itemList;
 
-    public ItemAdapter(List<ItemModel> itemList) {
+    public ItemAdapter(List<Category> itemList) {
         this.itemList = itemList;
     }
 
@@ -25,9 +25,9 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
 
     @Override
     public void onBindViewHolder(ItemViewHolder holder, int position) {
-        ItemModel item = itemList.get(position);
+        Category item = itemList.get(position);
         holder.nameTextView.setText(item.getName());
-        holder.urlTextView.setText(item.getUrl());
+//        holder.urlTextView.setText(item.getUrl());
     }
 
     @Override

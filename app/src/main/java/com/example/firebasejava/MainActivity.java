@@ -30,6 +30,7 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView recyclerView;
 
     ItemAdapter itemAdapter;
+    private List<Category> categoryList;
 
     private ArrayList<ItemModel> modalArrayList;
 
@@ -42,8 +43,21 @@ public class MainActivity extends AppCompatActivity {
         databaseHelper = new DatabaseHelper(this);
 
 
+//        long subcategory = 2; // Охирги ID ёки ўзингизга керакли ID
+        categoryList = databaseHelper.getAllCategories();
+        Log.d("demo47", "Номи_Catigory: " + categoryList.toString());
+//        if (CategoryArrayList != null) {
+//            Log.d("demo47", "Номи: " + CategoryArrayList);
+//        } else {
+//            Log.d("demo47", "Бундай Subcategory топилмади");
+//        }
+
+
+
+
+
         DatabaseHelper dbHelper = new DatabaseHelper(this);
-        long subcategory = 3; // Охирги ID ёки ўзингизга керакли ID
+        long subcategory = 2; // Охирги ID ёки ўзингизга керакли ID
         String subcategoryName = dbHelper.getSubcategoryName(subcategory);
 
         if (subcategoryName != null) {
@@ -65,7 +79,7 @@ public class MainActivity extends AppCompatActivity {
         long subcategoryId = 3; // Мисол ID
         List<ItemModel> items = databaseHelper.getItemsBySubcategory(subcategoryId);
 
-        itemAdapter = new ItemAdapter(items);
+        itemAdapter = new ItemAdapter(categoryList);
         recyclerView.setAdapter(itemAdapter);
 
     }
