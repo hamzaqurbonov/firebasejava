@@ -68,4 +68,5 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
             childRecyclerView = itemView.findViewById(R.id.child_recycler_view);
         }
     }
+
 }

@@ -45,4 +45,5 @@ public class ItemModel {
     public void setSubcategoryId(long subcategoryId) {
         this.subcategoryId = subcategoryId;
     }
+
 }

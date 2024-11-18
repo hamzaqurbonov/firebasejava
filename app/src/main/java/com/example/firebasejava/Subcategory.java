@@ -84,5 +84,6 @@ public class Subcategory {
     public int getCategoryId() {
         return categoryId;
     }
+    
 }
 

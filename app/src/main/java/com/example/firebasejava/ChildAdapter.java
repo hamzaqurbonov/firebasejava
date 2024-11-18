@@ -46,4 +46,5 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
             textView = itemView.findViewById(R.id.child_item_text);
         }
     }
+
 }

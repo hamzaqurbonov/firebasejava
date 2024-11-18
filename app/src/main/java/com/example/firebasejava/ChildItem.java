@@ -16,5 +16,6 @@ public class ChildItem {
     public String getText() {
         return text;
     }
+
 }
 
