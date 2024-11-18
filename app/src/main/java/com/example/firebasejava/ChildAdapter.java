@@ -1,5 +1,8 @@
 package com.example.firebasejava;
 
+import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +41,18 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
                 .centerCrop()
                 .placeholder(R.drawable.baseline_add_circle_outline_24)
                 .into(holder.imageView);
+
+
+        // Клик ивент
+        holder.itemView.setOnClickListener(v -> {
+            Context context = holder.itemView.getContext();
+
+            Log.d("demo59", "getCategoryId(): " + childItem.getCategoryId());
+//            Intent intent = new Intent(context, ItemListActivity.class);
+//            intent.putExtra("subcategoryId", childItem.getCategoryId());
+//            context.startActivity(intent);
+        });
+
     }
 
     @Override

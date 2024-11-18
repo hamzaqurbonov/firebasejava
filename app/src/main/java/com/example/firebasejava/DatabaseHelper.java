@@ -142,6 +142,27 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return subcategoryList;
     }
 
+    public List<ItemModel> getItemsBySubcategory(long subcategoryId) {
+        List<ItemModel> itemList = new ArrayList<>();
+        SQLiteDatabase db = this.getReadableDatabase();
+
+        String query = "SELECT * FROM " + TABLE_ITEM + " WHERE " + COLUMN_SUBCATEGORY_ID_FK + " = ?";
+        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(subcategoryId)});
+
+        if (cursor.moveToFirst()) {
+            do {
+                long itemId = cursor.getLong(cursor.getColumnIndex(COLUMN_ITEM_ID));
+                String name = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
+                String url = cursor.getString(cursor.getColumnIndex(COLUMN_URL));
+                itemList.add(new ItemModel(itemId, name, url, subcategoryId));
+            } while (cursor.moveToNext());
+        }
+
+        cursor.close();
+        db.close();
+        return itemList;
+    }
+
 
 //    public List<Category> getAllCategories() {
 //        List<Category> categoryList = new ArrayList<>();
@@ -179,26 +200,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        return subcategoryName;
 //    }
 //
-//    public List<ItemModel> getItemsBySubcategory(long subcategoryId) {
-//        List<ItemModel> itemList = new ArrayList<>();
-//        SQLiteDatabase db = this.getReadableDatabase();
-//
-//        String query = "SELECT * FROM " + TABLE_ITEM + " WHERE " + COLUMN_SUBCATEGORY_ID_FK + " = ?";
-//        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(subcategoryId)});
-//
-//        if (cursor.moveToFirst()) {
-//            do {
-//                long itemId = cursor.getLong(cursor.getColumnIndex(COLUMN_ITEM_ID));
-//                String name = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
-//                String url = cursor.getString(cursor.getColumnIndex(COLUMN_URL));
-//                itemList.add(new ItemModel(itemId, name, url, subcategoryId));
-//            } while (cursor.moveToNext());
-//        }
-//
-//        cursor.close();
-//        db.close();
-//        return itemList;
-//    }
+
 //
 //
 //    // Update item

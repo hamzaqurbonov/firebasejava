@@ -5,11 +5,13 @@ public class ChildItem {
     private String text;
 
     String img;
+    private int categoryId;
 
-    public ChildItem( String img, String text) {
+    public ChildItem( String img, String text, int categoryId) {
         this.imageResId = imageResId;
         this.text = text;
         this.img = img;
+        this.categoryId = categoryId;
     }
 
     public int getImageResId() {
@@ -22,6 +24,10 @@ public class ChildItem {
 
     public String getImg() {
         return img;
+    }
+
+    public int getCategoryId() {
+        return categoryId;
     }
 }
 
