@@ -23,6 +23,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String TABLE_SUBCATEGORY = "Subcategory";
     private static final String COLUMN_SUBCATEGORY_ID = "subcategory_id";
     private static final String COLUMN_SUBCATEGORY_NAME = "subcategory_name";
+    private static final String COLUMN_SUBCATEGORY_IMG = "subcategory_img";
     private static final String COLUMN_CATEGORY_ID_FK = "category_id";
 
     // Item table
@@ -48,6 +49,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         String CREATE_SUBCATEGORY_TABLE = "CREATE TABLE " + TABLE_SUBCATEGORY + "("
                 + COLUMN_SUBCATEGORY_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_SUBCATEGORY_NAME + " TEXT NOT NULL,"
+                + COLUMN_SUBCATEGORY_IMG + " TEXT NOT NULL,"
                 + COLUMN_CATEGORY_ID_FK + " INTEGER,"
                 + "FOREIGN KEY(" + COLUMN_CATEGORY_ID_FK + ") REFERENCES " + TABLE_CATEGORY + "(" + COLUMN_CATEGORY_ID + "))";
         db.execSQL(CREATE_SUBCATEGORY_TABLE);
@@ -79,10 +81,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Insert subcategory
-    public long addSubcategory(String subcategoryName, long categoryId) {
+    public long addSubcategory(String subcategoryName, String subcategoryImg, long categoryId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_SUBCATEGORY_NAME, subcategoryName);
+        values.put(COLUMN_SUBCATEGORY_IMG, subcategoryImg);
         values.put(COLUMN_CATEGORY_ID_FK, categoryId);
         return db.insert(TABLE_SUBCATEGORY, null, values);
     }
@@ -96,23 +99,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         values.put(COLUMN_SUBCATEGORY_ID_FK, subcategoryId);
         return db.insert(TABLE_ITEM, null, values);
     }
-
-//    public List<Category> getAllCategories() {
-//        List<Category> categoryList = new ArrayList<>();
-//        SQLiteDatabase db = this.getReadableDatabase();
-//        String query = "SELECT * FROM " + TABLE_CATEGORY;
-//
-//        Cursor cursor = db.rawQuery(query, null);
-//        if (cursor.moveToFirst()) {
-//            do {
-//                int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY_ID));
-//                String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY_NAME));
-//                categoryList.add(new Category(id, name));
-//            } while (cursor.moveToNext());
-//        }
-//        cursor.close();
-//        return categoryList;
-//    }
 
     public List<Category> getAllCategories() {
         List<Category> categoryList = new ArrayList<>();
@@ -138,7 +124,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return categoryList;
     }
 
-
     public List<Subcategory> getSubcategoriesByCategoryId(int categoryId) {
         List<Subcategory> subcategoryList = new ArrayList<>();
         SQLiteDatabase db = this.getReadableDatabase();
@@ -149,7 +134,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             do {
                 int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_SUBCATEGORY_ID));
                 String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SUBCATEGORY_NAME));
-                subcategoryList.add(new Subcategory(id, name, categoryId));
+                String img = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_SUBCATEGORY_IMG));
+                subcategoryList.add(new Subcategory(id, name, img, categoryId));
             } while (cursor.moveToNext());
         }
         cursor.close();
@@ -157,54 +143,72 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
 
+//    public List<Category> getAllCategories() {
+//        List<Category> categoryList = new ArrayList<>();
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        String query = "SELECT * FROM " + TABLE_CATEGORY;
+//
+//        Cursor cursor = db.rawQuery(query, null);
+//        if (cursor.moveToFirst()) {
+//            do {
+//                int id = cursor.getInt(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY_ID));
+//                String name = cursor.getString(cursor.getColumnIndexOrThrow(COLUMN_CATEGORY_NAME));
+//                categoryList.add(new Category(id, name));
+//            } while (cursor.moveToNext());
+//        }
+//        cursor.close();
+//        return categoryList;
+//    }
 
-
-    public String getSubcategoryName(long subcategoryId) {
-        SQLiteDatabase db = this.getReadableDatabase();
-        String subcategoryName = null;
-
-        String query = "SELECT " + COLUMN_SUBCATEGORY_NAME + " FROM " + TABLE_SUBCATEGORY + " WHERE " + COLUMN_SUBCATEGORY_ID + " = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(subcategoryId)});
-
-        if (cursor.moveToFirst()) {
-            subcategoryName = cursor.getString(cursor.getColumnIndex(COLUMN_SUBCATEGORY_NAME));
-        }
-
-        cursor.close();
-        db.close();
-        return subcategoryName;
-    }
-
-    public List<ItemModel> getItemsBySubcategory(long subcategoryId) {
-        List<ItemModel> itemList = new ArrayList<>();
-        SQLiteDatabase db = this.getReadableDatabase();
-
-        String query = "SELECT * FROM " + TABLE_ITEM + " WHERE " + COLUMN_SUBCATEGORY_ID_FK + " = ?";
-        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(subcategoryId)});
-
-        if (cursor.moveToFirst()) {
-            do {
-                long itemId = cursor.getLong(cursor.getColumnIndex(COLUMN_ITEM_ID));
-                String name = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
-                String url = cursor.getString(cursor.getColumnIndex(COLUMN_URL));
-                itemList.add(new ItemModel(itemId, name, url, subcategoryId));
-            } while (cursor.moveToNext());
-        }
-
-        cursor.close();
-        db.close();
-        return itemList;
-    }
-
-
-    // Update item
-    public int updateItem(long itemId, String newId, String newUrl) {
-        SQLiteDatabase db = this.getWritableDatabase();
-        ContentValues values = new ContentValues();
-        values.put(COLUMN_ID, newId);
-        values.put(COLUMN_URL, newUrl);
-        return db.update(TABLE_ITEM, values, COLUMN_ITEM_ID + "=?", new String[]{String.valueOf(itemId)});
-    }
+//
+//
+//
+//    public String getSubcategoryName(long subcategoryId) {
+//        SQLiteDatabase db = this.getReadableDatabase();
+//        String subcategoryName = null;
+//
+//        String query = "SELECT " + COLUMN_SUBCATEGORY_NAME + " FROM " + TABLE_SUBCATEGORY + " WHERE " + COLUMN_SUBCATEGORY_ID + " = ?";
+//        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(subcategoryId)});
+//
+//        if (cursor.moveToFirst()) {
+//            subcategoryName = cursor.getString(cursor.getColumnIndex(COLUMN_SUBCATEGORY_NAME));
+//        }
+//
+//        cursor.close();
+//        db.close();
+//        return subcategoryName;
+//    }
+//
+//    public List<ItemModel> getItemsBySubcategory(long subcategoryId) {
+//        List<ItemModel> itemList = new ArrayList<>();
+//        SQLiteDatabase db = this.getReadableDatabase();
+//
+//        String query = "SELECT * FROM " + TABLE_ITEM + " WHERE " + COLUMN_SUBCATEGORY_ID_FK + " = ?";
+//        Cursor cursor = db.rawQuery(query, new String[]{String.valueOf(subcategoryId)});
+//
+//        if (cursor.moveToFirst()) {
+//            do {
+//                long itemId = cursor.getLong(cursor.getColumnIndex(COLUMN_ITEM_ID));
+//                String name = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
+//                String url = cursor.getString(cursor.getColumnIndex(COLUMN_URL));
+//                itemList.add(new ItemModel(itemId, name, url, subcategoryId));
+//            } while (cursor.moveToNext());
+//        }
+//
+//        cursor.close();
+//        db.close();
+//        return itemList;
+//    }
+//
+//
+//    // Update item
+//    public int updateItem(long itemId, String newId, String newUrl) {
+//        SQLiteDatabase db = this.getWritableDatabase();
+//        ContentValues values = new ContentValues();
+//        values.put(COLUMN_ID, newId);
+//        values.put(COLUMN_URL, newUrl);
+//        return db.update(TABLE_ITEM, values, COLUMN_ITEM_ID + "=?", new String[]{String.valueOf(itemId)});
+//    }
 
     // Delete item
     public int deleteItem(long itemId) {

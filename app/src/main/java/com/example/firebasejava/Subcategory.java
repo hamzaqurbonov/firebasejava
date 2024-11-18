@@ -3,73 +3,17 @@ package com.example.firebasejava;
 import java.util.ArrayList;
 import java.util.List;
 
-//public class Subcategory {
-//    private long id;
-//    private String name;
-//    private List<Item> items;
-//
-//    public Subcategory(long id, String name) {
-//        this.id = id;
-//        this.name = name;
-//        this.items = new ArrayList<>();
-//    }
-//
-//    // Getter ва Setter методлар
-//    public long getId() { return id; }
-//    public String getName() { return name; }
-//    public List<Item> getItems() { return items; }
-//
-//    public void addItem(Item item) {
-//        this.items.add(item);
-//    }
-//}
-
-//public class Subcategory {
-//    private long id;
-//    private String name;
-//    private long categoryId;
-//
-//    // Конструктор, геттер ва сеттерлар
-//    public Subcategory(long id, String name, long categoryId) {
-//        this.id = id;
-//        this.name = name;
-//        this.categoryId = categoryId;
-//    }
-//
-//    public long getId() { return id; }
-//    public String getName() { return name; }
-//    public long getCategoryId() { return categoryId; }
-//}
-
-
-
-
-//public class Subcategory {
-//    private String title;
-//    private List<Item> items;
-//
-//    public Subcategory(String title, List<Item> items) {
-//        this.title = title;
-//        this.items = items;
-//    }
-//
-//    public String getTitle() {
-//        return title;
-//    }
-//
-//    public List<Item> getItems() {
-//        return items;
-//    }
-//}
 
 public class Subcategory {
     private int id;
     private String name;
+    private String img;
     private int categoryId;
 
-    public Subcategory(int id, String name, int categoryId) {
+    public Subcategory(int id, String name, String img, int categoryId) {
         this.id = id;
         this.name = name;
+        this.img = img;
         this.categoryId = categoryId;
     }
 
@@ -81,9 +25,13 @@ public class Subcategory {
         return name;
     }
 
+    public String getImg() {
+        return img;
+    }
+
     public int getCategoryId() {
         return categoryId;
     }
-    
+
 }
 

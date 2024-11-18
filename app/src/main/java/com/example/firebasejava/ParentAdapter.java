@@ -43,7 +43,7 @@ public class ParentAdapter extends RecyclerView.Adapter<ParentAdapter.ParentView
         // Subcategoryларни боғлаш
         List<ChildItem> childItems = new ArrayList<>();
         for (Subcategory subcategory : parentItem.getSubcategories()) {
-            childItems.add(new ChildItem(R.drawable.baseline_add_circle_outline_24, subcategory.getName())); // иккинчи параметр — Subcategory номи
+            childItems.add(new ChildItem(subcategory.getImg(), subcategory.getName())); // иккинчи параметр — Subcategory номи
         }
 
         ChildAdapter childItemAdapter = new ChildAdapter(childItems);

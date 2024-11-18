@@ -20,6 +20,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 
 public class MainActivity extends AppCompatActivity {
@@ -34,7 +35,9 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         databaseHelper = new DatabaseHelper(this);
+        versiyaSQL();
         RecyclerView parentRecyclerView = findViewById(R.id.parent_recycler_view);
 
 
@@ -67,7 +70,10 @@ public class MainActivity extends AppCompatActivity {
                                         if (subTask.isSuccessful()) {
                                             for (DocumentSnapshot subDoc : subTask.getResult()) {
                                                 String subDocId = subDoc.getId();
-                                                long subcategoryId = databaseHelper.addSubcategory(subDocId, categoryId);
+                                                String subImg =subDoc.getData().get("img").toString();
+                                                Log.d("demo57", "IMG: " + subImg);
+
+                                                long subcategoryId = databaseHelper.addSubcategory(subDocId, subImg, categoryId);
 
                                                 // Ҳар бир ҳужжат ичидаги `key` массивини оламиз
                                                 List<Map<String, Object>> keyArray = (List<Map<String, Object>>) subDoc.get("key");

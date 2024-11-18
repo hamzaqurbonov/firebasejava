@@ -7,6 +7,9 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.bumptech.glide.Glide;
+
 import java.util.List;
 
 public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHolder> {
@@ -27,8 +30,14 @@ public class ChildAdapter extends RecyclerView.Adapter<ChildAdapter.ChildViewHol
     @Override
     public void onBindViewHolder(@NonNull ChildViewHolder holder, int position) {
         ChildItem childItem = childItemList.get(position);
-        holder.imageView.setImageResource(childItem.getImageResId());
+//        holder.imageView.setImageResource(childItem.getImageResId());
         holder.textView.setText(childItem.getText());
+
+        Glide.with(holder.itemView.getContext()) // get context from view
+                .load(childItem.getImg())
+                .centerCrop()
+                .placeholder(R.drawable.baseline_add_circle_outline_24)
+                .into(holder.imageView);
     }
 
     @Override
