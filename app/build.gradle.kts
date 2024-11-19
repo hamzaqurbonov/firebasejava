@@ -17,6 +17,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
+
     buildTypes {
         release {
             isMinifyEnabled = false
@@ -29,6 +30,10 @@ android {
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_1_8
         targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    packagingOptions {
+        exclude ("META-INF/DEPENDENCIES")
     }
 }
 
@@ -52,6 +57,13 @@ dependencies {
 
     implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.1")
     implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.30")
+
+//    implementation ("com.pierfrancescosoffritti.android-youtube-player:core:10.0.5")
+
+    implementation ("com.google.api-client:google-api-client:1.33.0")
+    implementation ("com.google.http-client:google-http-client-gson:1.41.0")
+    implementation ("com.google.apis:google-api-services-youtube:v3-rev222-1.25.0")
+
 //    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
 //    implementation("com.google.firebase:firebase-analytics")
 //    implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")

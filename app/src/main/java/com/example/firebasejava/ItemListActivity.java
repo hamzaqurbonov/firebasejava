@@ -19,16 +19,31 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.api.client.http.HttpTransport;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.JsonFactory;
+import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.services.youtube.YouTube;
+import com.google.api.services.youtube.model.Video;
+import com.google.api.services.youtube.model.VideoListResponse;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.YouTubePlayerListener;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.options.IFramePlayerOptions;
 import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
 
+import java.io.IOException;
+import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.Executors;
 
 public class ItemListActivity extends AppCompatActivity {
+
+
+    private static final String API_KEY = "YOUR_API_KEY"; // YouTube Data API калити
+    private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+    private static final JsonFactory JSON_FACTORY = new GsonFactory();
 
     private RecyclerView itemRecyclerView;
     private DatabaseHelper databaseHelper;
@@ -89,6 +104,8 @@ public class ItemListActivity extends AppCompatActivity {
                 Log.d("demo61", "getVieoId: " + getVieoId);
 //                post = position; // Позицияни ўрнатиш
 
+
+
                 // YouTube видеони юклаш
                 if (youTubePlayer != null) {
                     // YouTubePlayer аллақачон инициализация қилинган, фақат видеони юклаймиз
@@ -101,6 +118,13 @@ public class ItemListActivity extends AppCompatActivity {
                         public void onReady(@NonNull YouTubePlayer initializedYouTubePlayer) {
                             youTubePlayer = initializedYouTubePlayer; // YouTubePlayer объектини сақлаб қўямиз
 
+                            // YouTube Data API орқали видеонинг номини олиш
+//                            try {
+
+//                                Toast.makeText(MainActivity.this, "Видео номи: " + videoTitle, Toast.LENGTH_SHORT).show();
+//                            } catch (IOException es) {
+//                                es.printStackTrace();
+//                            }
 
 
                             nextPlay.setOnClickListener(v -> {
@@ -134,6 +158,14 @@ public class ItemListActivity extends AppCompatActivity {
                             youTubePlayer.addListener(customPlayerUiController);
 
                             youTubePlayer.loadVideo(getVieoId, 0f);
+
+//                            String videoTitle = getVideoTitle(getVieoId);
+//                            Log.d("demo61", "Сарлавҳа: " + videoTitle);
+
+                            getVideoTitle(getVieoId, title -> {
+                                Log.d("demo61", "Сарлавҳа: " + title);
+//                                Toast.makeText(this, "Видео номи: " + title, Toast.LENGTH_SHORT).show();
+                            });
 
 
                             customSeekBar.setMax(100);
@@ -188,6 +220,40 @@ public class ItemListActivity extends AppCompatActivity {
             }
         });
     }
+
+    public void getVideoTitle(String videoId, VideoTitleCallback callback) {
+        Executors.newSingleThreadExecutor().execute(() -> {
+            try {
+                // YouTube API хизмати билан боғланиш
+                YouTube youtubeService = new YouTube.Builder(HTTP_TRANSPORT, JSON_FACTORY, null)
+                        .setApplicationName("YouTube Player Example")
+                        .build();
+
+                YouTube.Videos.List request = youtubeService.videos()
+                        .list(Collections.singletonList("snippet").toString());
+                VideoListResponse response = request.setId(Collections.singletonList(videoId).toString())
+                        .setKey(API_KEY)
+                        .execute();
+
+                if (!response.getItems().isEmpty()) {
+                    String videoTitle = response.getItems().get(0).getSnippet().getTitle();
+
+                    // Асосий оқимда натижани қайтариш
+                    runOnUiThread(() -> callback.onTitleReceived(videoTitle));
+                } else {
+                    runOnUiThread(() -> callback.onTitleReceived("Видео топилмади!"));
+                }
+
+            } catch (IOException e) {
+                e.printStackTrace();
+                runOnUiThread(() -> callback.onTitleReceived("Хато юз берди!"));
+            }
+        });
+    }
+    public interface VideoTitleCallback {
+        void onTitleReceived(String title);
+    }
+
 
     private void play() {
         play.setOnClickListener(new View.OnClickListener() {
