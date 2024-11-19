@@ -78,9 +78,12 @@ public class MainActivity extends AppCompatActivity {
                                                         // `id` ва `img` қийматларни оламиз
                                                         String id = (String) mapItem.get("id");
                                                         String url = (String) mapItem.get("url");
+                                                        String img = (String) mapItem.get("img");
+                                                        String name = (String) mapItem.get("name");
+                                                        String old = (String) mapItem.get("old");
 //                                                        ItemModel newItem = new ItemModel(1, id, url, subcategoryId);
 
-                                                        databaseHelper.addItem(id,url, subcategoryId);
+                                                        databaseHelper.addItem(id,url, img, name, old, subcategoryId);
 //                                                        databaseHelper.addItem(db, newItem);
 
                                                         Log.d("demo59", "Found1: " + mapItem.get("id"));

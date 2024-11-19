@@ -32,10 +32,10 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         ItemModel item = itemList.get(position);
-        holder.textView.setText(item.getUrl());
+        holder.textView.setText(item.getId());
         Log.d("demo60", "item.getUrl(): " + item.getUrl());
         Glide.with(holder.itemView.getContext())
-                .load(item.getUrl())
+                .load(item.getImg())
                 .placeholder(R.drawable.baseline_add_circle_outline_24)
                 .into(holder.imageView);
     }

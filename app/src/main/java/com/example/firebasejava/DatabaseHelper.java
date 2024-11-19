@@ -32,6 +32,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     private static final String COLUMN_ITEM_ID = "item_id";
     private static final String COLUMN_ID = "id";
     private static final String COLUMN_URL = "url";
+    private static final String COLUMN_IMG = "img";
+    private static final String COLUMN_NAME = "name";
+    private static final String COLUMN_OLD = "old";
     private static final String COLUMN_SUBCATEGORY_ID_FK = "subcategory_id";
 
     public DatabaseHelper(Context context) {
@@ -60,6 +63,9 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 + COLUMN_ITEM_ID + " INTEGER PRIMARY KEY AUTOINCREMENT,"
                 + COLUMN_ID + " TEXT NOT NULL,"
                 + COLUMN_URL + " TEXT NOT NULL,"
+                + COLUMN_IMG + " TEXT NOT NULL,"
+                + COLUMN_NAME + " TEXT NOT NULL,"
+                + COLUMN_OLD + " TEXT NOT NULL, "
                 + COLUMN_SUBCATEGORY_ID_FK + " INTEGER,"
                 + "FOREIGN KEY(" + COLUMN_SUBCATEGORY_ID_FK + ") REFERENCES " + TABLE_SUBCATEGORY + "(" + COLUMN_SUBCATEGORY_ID + "))";
         db.execSQL(CREATE_ITEM_TABLE);
@@ -70,6 +76,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CATEGORY);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_SUBCATEGORY);
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_ITEM);
+
+//        if (oldVersion < 2) { // 1-версиядан 2-га ўтиш
+//            db.execSQL("ALTER TABLE " + TABLE_ITEM + " ADD COLUMN " + COLUMN_IMG + " TEXT");
+//            db.execSQL("ALTER TABLE " + TABLE_ITEM + " ADD COLUMN " + COLUMN_NAME + " TEXT");
+//            db.execSQL("ALTER TABLE " + TABLE_ITEM + " ADD COLUMN " + COLUMN_OLD + " TEXT");
+//        }
+//        if (oldVersion < 3) { // 2-версиядан 3-га ўтиш
+//            db.execSQL("ALTER TABLE items ADD COLUMN description TEXT");
+//        }
+//        if (oldVersion < 4) { // 3-версиядан 4-га ўтиш
+//            db.execSQL("CREATE TABLE new_table (id INTEGER PRIMARY KEY, value TEXT)");
+//        }
+
         onCreate(db);
     }
 
@@ -92,11 +111,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     }
 
     // Insert item
-    public long addItem(String id, String url, long subcategoryId) {
+    public long addItem(String id, String url, String img, String name, String old,long subcategoryId) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues values = new ContentValues();
         values.put(COLUMN_ID, id);
         values.put(COLUMN_URL, url);
+        values.put(COLUMN_IMG, img);
+        values.put(COLUMN_NAME, name);
+        values.put(COLUMN_OLD, old);
         values.put(COLUMN_SUBCATEGORY_ID_FK, subcategoryId);
         return db.insert(TABLE_ITEM, null, values);
     }
@@ -153,9 +175,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             do {
                 long itemId = cursor.getLong(cursor.getColumnIndex(COLUMN_ITEM_ID));
-                String name = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
+                String id = cursor.getString(cursor.getColumnIndex(COLUMN_ID));
                 String url = cursor.getString(cursor.getColumnIndex(COLUMN_URL));
-                itemList.add(new ItemModel(itemId, name, url, subcategoryId));
+                String img = cursor.getString(cursor.getColumnIndex(COLUMN_IMG));
+                String name = cursor.getString(cursor.getColumnIndex(COLUMN_NAME));
+                String old = cursor.getString(cursor.getColumnIndex(COLUMN_OLD));
+                itemList.add(new ItemModel(itemId, id, url, img, name, old, subcategoryId));
             } while (cursor.moveToNext());
         }
         Log.d("demo60", "item.getUrl(): " + itemList + " " + subcategoryId);
