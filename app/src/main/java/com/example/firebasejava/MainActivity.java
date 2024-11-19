@@ -28,6 +28,8 @@ public class MainActivity extends AppCompatActivity {
 
     private DatabaseHelper databaseHelper;
     private List<Category> categoryList;
+    RecyclerView parentRecyclerView;
+    ParentAdapter parentAdapter;
 
 
     @SuppressLint("MissingInflatedId")
@@ -37,17 +39,9 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         databaseHelper = new DatabaseHelper(this);
-//        versiyaSQL();
-        RecyclerView parentRecyclerView = findViewById(R.id.parent_recycler_view);
+        parentRecyclerView = findViewById(R.id.parent_recycler_view);
 
-
-        categoryList = databaseHelper.getAllCategories();
-
-        ParentAdapter parentAdapter = new ParentAdapter(categoryList);
-        parentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        parentRecyclerView.setAdapter(parentAdapter);
-
-
+        versiyaSQL();
     }
 
     private void versiyaSQL() {
@@ -57,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
                 .get()
                 .addOnCompleteListener(task -> {
                     if (task.isSuccessful()) {
-//                        dbHome.deleteAllData();
+                        databaseHelper.deleteAllData();
                         for (DocumentSnapshot mainDoc : task.getResult()) {
                             String mainDocId = mainDoc.getId();
                             long categoryId = databaseHelper.addCategory(mainDocId);
@@ -95,11 +89,16 @@ public class MainActivity extends AppCompatActivity {
                                                 }
                                             }
 
+                                            categoryList = databaseHelper.getAllCategories();
+                                            parentAdapter = new ParentAdapter(categoryList);
+                                            parentRecyclerView.setLayoutManager(new LinearLayoutManager(this));
+                                            parentRecyclerView.setAdapter(parentAdapter);
 
                                         } else {
                                             Log.d("Firestore", "Ички коллекцияни олишда хатолик", subTask.getException());
                                         }
                                     });
+
                         }
                     } else {
                         Log.d("Firestore", "Асосий ҳужжатларни олишда хатолик", task.getException());

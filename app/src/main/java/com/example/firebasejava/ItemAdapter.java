@@ -1,5 +1,6 @@
 package com.example.firebasejava;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,8 +32,8 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
     @Override
     public void onBindViewHolder(@NonNull ItemViewHolder holder, int position) {
         ItemModel item = itemList.get(position);
-        holder.textView.setText(item.getName());
-
+        holder.textView.setText(item.getUrl());
+        Log.d("demo60", "item.getUrl(): " + item.getUrl());
         Glide.with(holder.itemView.getContext())
                 .load(item.getUrl())
                 .placeholder(R.drawable.baseline_add_circle_outline_24)

@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -157,6 +158,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 itemList.add(new ItemModel(itemId, name, url, subcategoryId));
             } while (cursor.moveToNext());
         }
+        Log.d("demo60", "item.getUrl(): " + itemList + " " + subcategoryId);
 
         cursor.close();
         db.close();
@@ -211,6 +213,26 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 //        values.put(COLUMN_URL, newUrl);
 //        return db.update(TABLE_ITEM, values, COLUMN_ITEM_ID + "=?", new String[]{String.valueOf(itemId)});
 //    }
+
+    public void deleteAllData(){
+        SQLiteDatabase db = this.getWritableDatabase();
+
+        // Ташқи калитларни фаоллаштириш
+//        db.execSQL("PRAGMA foreign_keys=ON;");
+
+        // Барча маълумотларни ўчириш
+        db.execSQL("DELETE FROM " + TABLE_CATEGORY);
+        db.execSQL("DELETE FROM " + TABLE_SUBCATEGORY);
+        db.execSQL("DELETE FROM " + TABLE_ITEM);
+
+        // Автоинкрементни қайта тиклаш
+        db.execSQL("DELETE FROM sqlite_sequence WHERE name='" + TABLE_CATEGORY + "'");
+        db.execSQL("DELETE FROM sqlite_sequence WHERE name='" + TABLE_SUBCATEGORY + "'");
+        db.execSQL("DELETE FROM sqlite_sequence WHERE name='" + TABLE_ITEM + "'");
+
+    }
+
+
 
     // Delete item
     public int deleteItem(long itemId) {

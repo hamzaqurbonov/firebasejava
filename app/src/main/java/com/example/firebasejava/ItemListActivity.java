@@ -24,23 +24,13 @@ public class ItemListActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-//        EdgeToEdge.enable(this);
         setContentView(R.layout.activity_item_list);
-//        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
-//            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
-//            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
-//            return insets;
-//        });
 
         itemRecyclerView = findViewById(R.id.item_recycler_view);
         databaseHelper = new DatabaseHelper(this);
 
         // Intent орқали `subcategoryId` олиш
         int subcategoryId = getIntent().getIntExtra("subcategory", -1);
-
-//        long subcategoryId = getIntent().getLongExtra("subcategory", 3);
-
-//        subcategoryId = Objects.requireNonNull(getIntent().getExtras()).getString("subcategory");
       Log.d("demo60", "ItemListActivity: " + subcategoryId);
 
 
