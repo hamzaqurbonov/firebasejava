@@ -17,6 +17,7 @@ import java.util.List;
 public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder> {
 
     private List<ItemModel> itemList;
+    private OnItemClickListener listener;
 
     public ItemAdapter(List<ItemModel> itemList) {
         this.itemList = itemList;
@@ -38,6 +39,16 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
                 .load(item.getImg())
                 .placeholder(R.drawable.baseline_add_circle_outline_24)
                 .into(holder.imageView);
+
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (listener != null) {
+                    listener.onItemClick(v, position);
+                }
+            }
+        });
     }
 
     @Override
@@ -55,4 +66,14 @@ public class ItemAdapter extends RecyclerView.Adapter<ItemAdapter.ItemViewHolder
             textView = itemView.findViewById(R.id.item_text);
         }
     }
+
+    // Fragmentга click қилиш
+    public interface OnItemClickListener {
+        void onItemClick(View v, int position);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        this.listener = listener;
+    }
+
 }

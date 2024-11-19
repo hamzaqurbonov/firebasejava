@@ -49,6 +49,9 @@ dependencies {
     implementation ("com.firebaseui:firebase-ui-firestore:7.1.1")
 //
     implementation ("com.github.bumptech.glide:glide:4.16.0")
+
+    implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.1")
+    implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:chromecast-sender:0.30")
 //    implementation(platform("com.google.firebase:firebase-bom:32.3.1"))
 //    implementation("com.google.firebase:firebase-analytics")
 //    implementation ("com.pierfrancescosoffritti.androidyoutubeplayer:core:12.1.0")
