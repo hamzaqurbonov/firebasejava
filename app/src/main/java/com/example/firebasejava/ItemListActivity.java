@@ -19,10 +19,12 @@ import androidx.core.view.WindowInsetsCompat;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport;
 import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.gson.GsonFactory;
+import com.google.api.client.json.jackson2.JacksonFactory;
 import com.google.api.services.youtube.YouTube;
 import com.google.api.services.youtube.model.Video;
 import com.google.api.services.youtube.model.VideoListResponse;
@@ -38,12 +40,16 @@ import java.util.List;
 import java.util.Objects;
 import java.util.concurrent.Executors;
 
+
+
+
 public class ItemListActivity extends AppCompatActivity {
 
 
-    private static final String API_KEY = "YOUR_API_KEY"; // YouTube Data API калити
-    private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
-    private static final JsonFactory JSON_FACTORY = new GsonFactory();
+    private static final String API_KEY = "AIzaSyDYs89G6hBgp4oBpgAwJ7Bqht8ifAS6dQ0"; // YouTube Data API калити
+    private static final JsonFactory JSON_FACTORY = JacksonFactory.getDefaultInstance();
+//    private static final HttpTransport HTTP_TRANSPORT = new NetHttpTransport();
+//    private static final JsonFactory JSON_FACTORY = new GsonFactory();
 
     private RecyclerView itemRecyclerView;
     private DatabaseHelper databaseHelper;
@@ -82,6 +88,9 @@ public class ItemListActivity extends AppCompatActivity {
 
 
 
+
+
+
         itemAdapter = new ItemAdapter(modalArrayList);
         itemRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         itemRecyclerView.setAdapter(itemAdapter);
@@ -91,6 +100,47 @@ public class ItemListActivity extends AppCompatActivity {
         stop();
         Fullscreen();
     }
+
+
+    private YouTube getYouTubeService() throws Exception {
+        return new YouTube.Builder(
+                GoogleNetHttpTransport.newTrustedTransport(),
+                JSON_FACTORY,
+                null
+        ).setApplicationName("YourApplicationName").build();
+    }
+
+    private void fetchVideoData(String videoId) {
+        try {
+            YouTube youtubeService = getYouTubeService();
+            YouTube.Videos.List request = youtubeService.videos()
+                    .list("snippet,contentDetails,statistics");
+            request.setId(videoId);
+            request.setKey(API_KEY);
+
+            new Thread(() -> {
+                try {
+                    VideoListResponse response = request.execute();
+                    runOnUiThread(() -> {
+                        if (response.getItems().size() > 0) {
+                            String title = response.getItems().get(0).getSnippet().getTitle();
+                            Log.d("YouTubeAPI", "Видео номи: " + title);
+                        } else {
+                            Log.d("YouTubeAPI", "Видео топилмади!");
+                        }
+                    });
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }).start();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
+
+
 
 
     private void ItemClickVideo() {
@@ -159,13 +209,8 @@ public class ItemListActivity extends AppCompatActivity {
 
                             youTubePlayer.loadVideo(getVieoId, 0f);
 
-//                            String videoTitle = getVideoTitle(getVieoId);
-//                            Log.d("demo61", "Сарлавҳа: " + videoTitle);
-
-                            getVideoTitle(getVieoId, title -> {
-                                Log.d("demo61", "Сарлавҳа: " + title);
-//                                Toast.makeText(this, "Видео номи: " + title, Toast.LENGTH_SHORT).show();
-                            });
+                            String testVideoId = getVieoId;
+                            fetchVideoData(testVideoId);
 
 
                             customSeekBar.setMax(100);
@@ -221,38 +266,38 @@ public class ItemListActivity extends AppCompatActivity {
         });
     }
 
-    public void getVideoTitle(String videoId, VideoTitleCallback callback) {
-        Executors.newSingleThreadExecutor().execute(() -> {
-            try {
-                // YouTube API хизмати билан боғланиш
-                YouTube youtubeService = new YouTube.Builder(HTTP_TRANSPORT, JSON_FACTORY, null)
-                        .setApplicationName("YouTube Player Example")
-                        .build();
-
-                YouTube.Videos.List request = youtubeService.videos()
-                        .list(Collections.singletonList("snippet").toString());
-                VideoListResponse response = request.setId(Collections.singletonList(videoId).toString())
-                        .setKey(API_KEY)
-                        .execute();
-
-                if (!response.getItems().isEmpty()) {
-                    String videoTitle = response.getItems().get(0).getSnippet().getTitle();
-
-                    // Асосий оқимда натижани қайтариш
-                    runOnUiThread(() -> callback.onTitleReceived(videoTitle));
-                } else {
-                    runOnUiThread(() -> callback.onTitleReceived("Видео топилмади!"));
-                }
-
-            } catch (IOException e) {
-                e.printStackTrace();
-                runOnUiThread(() -> callback.onTitleReceived("Хато юз берди!"));
-            }
-        });
-    }
-    public interface VideoTitleCallback {
-        void onTitleReceived(String title);
-    }
+//    public void getVideoTitle(String videoId, VideoTitleCallback callback) {
+//        Executors.newSingleThreadExecutor().execute(() -> {
+//            try {
+//                // YouTube API хизмати билан боғланиш
+//                YouTube youtubeService = new YouTube.Builder(HTTP_TRANSPORT, JSON_FACTORY, null)
+//                        .setApplicationName("YouTube Player Example")
+//                        .build();
+//
+//                YouTube.Videos.List request = youtubeService.videos()
+//                        .list(Collections.singletonList("snippet").toString());
+//                VideoListResponse response = request.setId(Collections.singletonList(videoId).toString())
+//                        .setKey(API_KEY)
+//                        .execute();
+//
+//                if (!response.getItems().isEmpty()) {
+//                    String videoTitle = response.getItems().get(0).getSnippet().getTitle();
+//
+//                    // Асосий оқимда натижани қайтариш
+//                    runOnUiThread(() -> callback.onTitleReceived(videoTitle));
+//                } else {
+//                    runOnUiThread(() -> callback.onTitleReceived("Видео топилмади!"));
+//                }
+//
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//                runOnUiThread(() -> callback.onTitleReceived("Хато юз берди!"));
+//            }
+//        });
+//    }
+//    public interface VideoTitleCallback {
+//        void onTitleReceived(String title);
+//    }
 
 
     private void play() {
